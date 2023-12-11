@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffc29923ac4be664e9b72cd70ee63366, type: 3}
+  m_Name: DefaultPalette
+  m_EditorClassIdentifier: 
+  isLevelDesignPalette: 0
+  hideInPaletteWindow: 0
+  objects:
+  - {fileID: 102900000, guid: 66afbc4f47977a84e8b38885bd653ec5, type: 3}
+  - {fileID: 102900000, guid: 4616c567d880944479c5cd09d220a5f3, type: 3}
+  subPalettes: []

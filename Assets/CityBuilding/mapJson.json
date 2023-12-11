@@ -1,0 +1,171 @@
+{
+    "pipes": [
+        {
+            "id": 1,
+            "cells": [
+                {
+                    "x": -5,
+                    "y": 1
+                },
+                {
+                    "x": -4,
+                    "y": 1
+                },
+                {
+                    "x": -3,
+                    "y": 1
+                },
+                {
+                    "x": -2,
+                    "y": 1
+                },
+                {
+                    "x": -1,
+                    "y": 1
+                },
+                {
+                    "x": 0,
+                    "y": 1
+                },
+                {
+                    "x": 0,
+                    "y": 0
+                },
+                {
+                    "x": 1,
+                    "y": 0
+                },
+                {
+                    "x": 1,
+                    "y": -1
+                },
+                {
+                    "x": 2,
+                    "y": -1
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "cells": [
+                {
+                    "x": 5,
+                    "y": -1
+                },
+                {
+                    "x": 5,
+                    "y": -2
+                },
+                {
+                    "x": 5,
+                    "y": -3
+                },
+                {
+                    "x": 5,
+                    "y": -4
+                },
+                {
+                    "x": 4,
+                    "y": -4
+                },
+                {
+                    "x": 3,
+                    "y": -4
+                },
+                {
+                    "x": 2,
+                    "y": -4
+                },
+                {
+                    "x": 1,
+                    "y": -4
+                },
+                {
+                    "x": 0,
+                    "y": -4
+                },
+                {
+                    "x": -1,
+                    "y": -4
+                },
+                {
+                    "x": -2,
+                    "y": -4
+                },
+                {
+                    "x": -3,
+                    "y": -4
+                },
+                {
+                    "x": -4,
+                    "y": -4
+                },
+                {
+                    "x": -5,
+                    "y": -4
+                }
+            ]
+        }
+    ],
+    "cross": [],
+    "sources": [
+        {
+            "id": 3,
+            "cell": {
+                "x": -5,
+                "y": 1
+            },
+            "pipe": 1,
+            "resourceName": "dirt-water",
+            "amount": 1,
+            "maxAmount": 1
+        },
+        {
+            "id": 4,
+            "cell": {
+                "x": 5,
+                "y": -1
+            },
+            "pipe": 2,
+            "resourceName": "clean-water",
+            "amount": 1,
+            "maxAmount": 1
+        }
+    ],
+    "destinations": [
+        {
+            "id": 5,
+            "cell": {
+                "x": 2,
+                "y": -1
+            },
+            "pipe": 1,
+            "resourceName": "dirt-water",
+            "amount": 1,
+            "maxAmount": 1
+        }
+    ],
+    "miners": [
+        {
+            "id": 6,
+            "cell": {
+                "x": -7,
+                "y": 1
+            },
+            "resourceName": "dirt-water",
+            "pipeSourceId": 3
+        }
+    ],
+    "converters": [
+        {
+            "id": 7,
+            "cell": {
+                "x": 3,
+                "y": -1
+            },
+            "converterType": "water-cleaner",
+            "inDestinationId": 5,
+            "outSourceId": 4
+        }
+    ]
+}
