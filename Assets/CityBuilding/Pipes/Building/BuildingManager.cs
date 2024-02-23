@@ -1,9 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Game.GameGui;
-using Game.Json;
 using GamePackages.Core;
 using GamePackages.Core.Validation;
+using GamePackages.InputSystem;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 namespace Game.Building
 {
@@ -11,44 +15,77 @@ namespace Game.Building
 	{
 		[SerializeField, IsntNull] MapBuilder mapBuilder;
 		[SerializeField, IsntNull] BuildingBrushPanel buildingBrushPanel;
-		[SerializeField, IsntNull] PipeBrush pipeBrush;
-		[SerializeField, IsntNull] StaticObjectBrush staticObjectBrush;
+		[SerializeField, IsntNull] Camera thisCamera;
+		[SerializeField, IsntNull] GameGrid grid;
+		[SerializeField, IsntNull] GameObject cellMarkerAvailable; 
+		[SerializeField, IsntNull] GameObject cellMarkerLock; 
+		[SerializeField, IsntNull] GuiHit guiHit;
 
-		IStaticBrushActionHandler[] buildingsInfo;
+		[Header("Building info")] 
+		[SerializeField, IsntNull] PipeBuildingInfo pipeBuildingInfo;
+		[SerializeField, IsntNull] CrossBuildingInfo crossBuildingInfo;
+		[SerializeField, IsntNull] MinerBuildingInfo dirtWaterMinerBuildingInfo;
+		[SerializeField, IsntNull] MinerBuildingInfo coalMinerBuildingInfo;
+		[SerializeField, IsntNull] ConverterBuildingInfo converterBuildingInfo;
+		
+		PointBrush staticObjectBrush;
 
-		public void Init(IStaticBrushActionHandler[] buildingsInfo)
-		{   
-			AssertWrapper.IsAllNotNull(buildingsInfo);
-			this.buildingsInfo = buildingsInfo;
-			
-			buildingBrushPanel.SelectBrush += OnSelectBuildingBrush;
-			OnSelectBuildingBrush(BuildingType.None);
-		}
+		PipeBrush pipeBrush;
+		List<PointBrush> staticBrushes;
+		BuildingBrush activeBrush;
 
-		void OnSelectBuildingBrush(BuildingType brushType)
+
+		public void Init()
 		{
-			if (brushType == BuildingType.None)
-			{
-				pipeBrush.gameObject.SetActive(false);
-				staticObjectBrush.gameObject.SetActive(false);
-			}
-			else if (brushType == BuildingType.Pipe)
-			{
-				pipeBrush.gameObject.SetActive(true);
-				staticObjectBrush.gameObject.SetActive(false);
-			}
-			else
-			{
-				pipeBrush.gameObject.SetActive(false);
-				staticObjectBrush.gameObject.SetActive(true);
-				
-				var buildingInfo = buildingsInfo.First(b => b.BuildingType == brushType);
-				staticObjectBrush.Set(buildingInfo.GetCellsMask(), cell =>
-				{
-					buildingInfo.BuildByBrushCommand(cell, mapBuilder );
-				});
-			}
+			BrushBuilder brushBuilder = new BrushBuilder(
+				thisCamera,
+				mapBuilder,
+				grid,
+				cellMarkerAvailable,
+				cellMarkerLock,
+				guiHit
+			);
+
+			pipeBrush = new PipeBrush(pipeBuildingInfo, crossBuildingInfo, brushBuilder);
+
+			activeBrush = null;
+			buildingBrushPanel.SelectPipe += () => activeBrush = pipeBrush;
+
+			staticBrushes = new List<PointBrush>();
+
+
+			AddProduction(
+				brushBuilder,
+				dirtWaterMinerBuildingInfo,
+				"Water Pump",
+				cell => dirtWaterMinerBuildingInfo.InstantiateNew(cell, mapBuilder));
+
+			AddProduction(
+				brushBuilder,
+				coalMinerBuildingInfo,
+				"Coal Miner",
+				cell => coalMinerBuildingInfo.InstantiateNew(cell, mapBuilder));
+
+
+			AddProduction(
+				brushBuilder,
+				converterBuildingInfo,
+				"Water Cleaner",
+				cell => converterBuildingInfo.InstantiateNew(cell, mapBuilder));
 		}
+
+		void AddProduction(BrushBuilder brushBuilder, BuildingInfoBase buildingInfo, string buttonLabel, UnityAction<Vector2Int> buildAction)
+		{
+			PointBrush newBrush = new PointBrush(pipeBrush, brushBuilder, buildingInfo.GetCellsMask());
+			staticBrushes.Add(newBrush);
+			buildingBrushPanel.AddProductionButton(buttonLabel, () => activeBrush = newBrush);
+			newBrush.Build += buildAction;
+		}
+
+		void Update()
+		{
+			  activeBrush?.LateUpdate();
+		} 
 	}
 	
 }

@@ -1,26 +1,24 @@
-﻿using System.Collections.Generic;
-using Game.Json;
+﻿using Game.Json;
 using GamePackages.Core.Validation;
 using UnityEngine;
 
 namespace Game.Building
 {
-	public sealed class ConverterBuildingInfo : BuildingInfo<ItemConvert, ItemConverterJson>
+	public abstract class ConverterBuildingInfo : BuildingInfo<ItemConvert, ItemConverterJson>
 	{
+		[SerializeField] string inItemName;
+		[SerializeField] string outItemName;
+		[SerializeField] Vector2Int inOffset;
+		[SerializeField] Vector2Int outOffset;
 		[SerializeField, IsntNull] SourceBuildingInfo sources;
 		[SerializeField, IsntNull] DestinationBuildingInfo destinations;
 		
-		protected override List<ItemConverterJson> GetJsonList(MapJson mapJson, MapBuilder mapBuilder)
-		{
-			return mapJson.converters;
-		}
- 
+		  
 		protected override ItemConverterJson PrintToJson(ItemConvert item)
 		{
 			return new ItemConverterJson()
 			{ 
-				cell = item.Cell,
-				converterType = item.converterType,
+				cell = item.Cell, 
 				inDestinationId = destinations.itemToId[item.inDestination],
 				outSourceId = sources.itemToId[item.outSource]
 			};
@@ -34,25 +32,23 @@ namespace Game.Building
 
 		protected override void InitAfterInstFormSave(ItemConvert item, Vector2Int cell, ItemConverterJson json, MapBuilder mapBuilder)
 		{
-			item.Init(
-				cell,
-				json.converterType,
+			item.Init( 
 				destinations.idToItem[json.inDestinationId],
 				sources.idToItem[json.outSourceId]);
 		}
  
-		public ItemConvert InstantiateNewConverter(Vector2Int cell, string converterType, string inItemName, string outItemName, MapBuilder mapBuilder)
+		public ItemConvert InstantiateNew(Vector2Int cell, MapBuilder mapBuilder)
 		{
 			//"water-cleaner","dirt-water", "clean-water"
-			var outSourceCell = cell + new Vector2Int(2, 0);
-			PipeItemSource outSource = sources.InstantiateNewSource(outSourceCell, outItemName, 0, 1, mapBuilder);
+			var outSourceCell = cell + outOffset;
+			PipeItemSource outSource = sources.InstantiateNewSource(outSourceCell, outItemName, mapBuilder);
 
-			var inDestinationCell = cell +  new Vector2Int(-1, 0);
-			PipeItemDestination inDestination = destinations.InstantiateNewDestination(inDestinationCell, inItemName,0, 1, mapBuilder);
+			var inDestinationCell = cell + inOffset;
+			PipeItemDestination inDestination = destinations.InstantiateNewDestination(inDestinationCell, inItemName, mapBuilder);
 			
 			
 			var item = InstantiateAsNew(cell, mapBuilder);
-			item.Init(cell, converterType,inDestination, outSource);
+			item.Init(inDestination, outSource);
 			return item;
 		}
 	}

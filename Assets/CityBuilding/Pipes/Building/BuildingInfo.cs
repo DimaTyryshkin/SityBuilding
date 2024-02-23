@@ -17,25 +17,24 @@ namespace Game.Building
 		ItemConverter,
 		Cross,
 	}
-
-	public interface IStaticBrushActionHandler
-	{
-		BuildingType BuildingType { get; }
-		Vector2Int[] GetCellsMask();
-		void BuildByBrushCommand(Vector2Int cell, MapBuilder mapBuilder);
-	}
-
+ 
 	public abstract class BuildingInfoBase : MonoBehaviour
 	{
-		[SerializeField] BuildingType buildingType;
 		[SerializeField] Vector2Int[] cellsMask;
-
-		public abstract Type ItemType { get; }
-		public BuildingType BuildingType => buildingType;
 
 		public Vector2Int[] GetCellsMask()
 		{
 			return cellsMask;
+		}
+
+		public List<Vector2Int> CopyCellsMask(Vector2Int offset)
+		{
+			List<Vector2Int> newMask = new List<Vector2Int>(cellsMask.Length);
+
+			for (int i = 0; i < cellsMask.Length; i++)
+				newMask.Add(cellsMask[i] + offset);
+
+			return newMask;
 		}
 
 		public abstract void Init();
@@ -50,22 +49,22 @@ namespace Game.Building
 	{
 		[SerializeField, IsntNull] protected T itemPrefab;
 		protected List<T> allItems;
-
-		public override Type ItemType => typeof(ItemMiner);
-
+  
 		public Dictionary<int, T> idToItem;
 		public Dictionary<T, int> itemToId;
 
-		public  sealed override void Init()
+		public sealed override void Init()
 		{
 			allItems = new List<T>();
-			idToItem = new Dictionary<int, T>(); 
+			idToItem = new Dictionary<int, T>();
 		}
 
 		protected abstract List<T2> GetJsonList(MapJson mapJson, MapBuilder mapBuilder);
 
-		public  sealed override void ParseJson(MapJson mapJson, MapBuilder mapBuilder)
+		public sealed override void ParseJson(MapJson mapJson, MapBuilder mapBuilder)
 		{
+			allItems = new List<T>();
+			idToItem = new Dictionary<int, T>(); 
 			List<T2> itemsJson = GetJsonList(mapJson, mapBuilder);
 			foreach (var json in itemsJson)
 				InstantiateFromSave(json, mapBuilder);
@@ -90,6 +89,7 @@ namespace Game.Building
 
 		public  sealed override void CastNonAllocate(Vector2Int cell, ref CellCast result)
 		{
+			allItems.ToStringMultilineAndLog($"CastNonAllocate {gameObject.name}",x=>x.name);
 			foreach (var item in allItems)
 			{
 				foreach (var c in item.cells)
@@ -138,6 +138,8 @@ namespace Game.Building
 
 			newItem.gameObject.transform.position = mapBuilder.Grid.CellToWorldPoint(cell);
 			newItem.Cell = cell;
+			newItem.cells = CopyCellsMask(cell);
+
 		
 			return newItem;
 		}

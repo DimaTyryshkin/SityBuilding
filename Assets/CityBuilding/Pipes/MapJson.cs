@@ -11,8 +11,9 @@ namespace Game.Json
 		public List<CrossJson> cross = new List<CrossJson>();
 		public List<SourceJson> sources = new List<SourceJson>();
 		public List<DestinationJson> destinations = new List<DestinationJson>(); 
-		public List<ItemMinerJson> miners = new List<ItemMinerJson>(); 
-		public List<ItemConverterJson> converters = new List<ItemConverterJson>(); 
+		public List<ItemMinerJson> dirtWaterMiners = new List<ItemMinerJson>(); 
+		public List<ItemMinerJson> coalMiners = new List<ItemMinerJson>(); 
+		public List<ItemConverterJson> waterCleanerConverters = new List<ItemConverterJson>(); 
 	}
  
 	public abstract class JsonEntity
@@ -59,8 +60,6 @@ namespace Game.Json
 		public int pipe;
 		
 		public string resourceName;
-		public int amount;
-		public int maxAmount;
 		
 		public override Vector2Int Cell =>cell;
 	}
@@ -91,8 +90,7 @@ namespace Game.Json
 	[Serializable]
 	public class ItemConverterJson:JsonEntity
 	{
-		public Vector2Int cell;
-		public string converterType;
+		public Vector2Int cell; 
 		public int inDestinationId;
 		public int outSourceId;
 		

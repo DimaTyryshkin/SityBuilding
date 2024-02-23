@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -6,32 +7,21 @@ namespace Game
 {
 	public class ItemConvert : MapElement
 	{
-		[SerializeField] StatusBar statusBar;
 		[SerializeField] float processTime = 1;
 		
-		public string converterType;
-		public PipeItemSource outSource;
-		public PipeItemDestination inDestination;
+		[NonSerialized] public PipeItemSource outSource;
+		[NonSerialized] public PipeItemDestination inDestination;
  
 
 		float timeStartProcess;
 		float progress;
 		bool isProcess;
 
-		public void Init(Vector2Int cell, string converterType, PipeItemDestination inDestination, PipeItemSource outSource )
+		public void Init(PipeItemDestination inDestination, PipeItemSource outSource )
 		{
 			Assert.IsNotNull(outSource);
 			Assert.IsNotNull(inDestination);
 			
-			Cell = cell;
-			cells = new List<Vector2Int>()
-			{
-				cell + new Vector2Int(1, 0),
-				cell + new Vector2Int(0, 1),
-				cell + new Vector2Int(1, 1),
-			};
-			
-			this.converterType = converterType;
 			this.outSource = outSource;
 			this.inDestination = inDestination;
 		}
@@ -46,11 +36,13 @@ namespace Game
 					if (outSource.IncrementAmount())
 						isProcess = false;
 					else
-						statusBar.SetLock();
+					{
+						//statusBar.SetLock();
+					}
 				}
 				else
 				{
-					statusBar.SetProgress(progress);
+					//statusBar.SetProgress(progress);
 				}
 			}
 			else
@@ -62,7 +54,7 @@ namespace Game
 				}
 				else
 				{
-					statusBar.SetEmpty();
+					//statusBar.SetEmpty();
 				}
 			}
 		}

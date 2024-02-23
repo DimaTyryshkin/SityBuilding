@@ -1,45 +1,25 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Game
 {
 	public class PipeItemSource : MapElement, IPipeSource
-	{
-		[SerializeField] StatusBar statusBar;
-		public string itemName;
-		public int itemAmount;
-		public int maxItemAmount;
-		public PipeQueue pipeQueue;
+	{ 
+		[NonSerialized] public string itemName; 
+		[NonSerialized] public PipeQueue pipeQueue;
 		
 
-		public void Init(Vector2Int cell, string resourceName, int amount, int maxAmount)
+		public void Init(string resourceName)
 		{
-			Cell = cell;
-			itemName = resourceName;
-			itemAmount = amount;
-			maxItemAmount = maxAmount;
-
-			statusBar.SetProgress(itemAmount, maxItemAmount);
+			itemName = resourceName; 
+ 
 		}
-
-		void Update()
-		{
-			if(!pipeQueue)
-				return;
-			
-			if (itemAmount > 0 && pipeQueue.CanAdd)
-			{
-				pipeQueue.Queue(itemName);
-				itemAmount--;
-				statusBar.SetProgress(itemAmount, maxItemAmount);
-			}
-		}
-
+ 
 		public bool IncrementAmount()
 		{
-			if (itemAmount < maxItemAmount)
+			if (pipeQueue && pipeQueue.CanAdd)
 			{
-				itemAmount++;
-				statusBar.SetProgress(itemAmount, maxItemAmount);
+				pipeQueue.Queue(itemName);
 				return true;
 			}
 			else

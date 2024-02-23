@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Game
 {
 	public abstract class MapElement : MonoBehaviour
 	{
+		[NonSerialized] public List<Vector2Int> cells;
 		public Vector2Int Cell { get; set; }
-		public List<Vector2Int> cells;
 		public abstract void Delinking();
 	}
 	

@@ -10,9 +10,8 @@ namespace Game
 		public PipeQueue pipeQueue;
 		public string itemName;
 
-		public void Init(Vector2Int cell, string itemName, int amount, int maxAmount)
-		{
-			Cell = cell;
+		public void Init(string itemName, int amount, int maxAmount)
+		{ 
 			this.itemName = itemName; 
 			itemAmount = amount;
 			maxItemAmount = maxAmount;

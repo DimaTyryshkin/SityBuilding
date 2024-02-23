@@ -97,7 +97,6 @@ namespace Game
 		void Update()
 		{
 			itemsRoot.DestroyChildren();
-
 		
 			foreach (var pipeItem in pipeQueue.queue)
 			{
@@ -119,10 +118,11 @@ namespace Game
 		{
 			switch (itemName)
 			{
-					
 				case "dirt-water": return Color.gray;
 				case "clean-water": return Color.blue;
-				default: return Color.black;
+				case "coal": return Color.black;
+				
+				default: return Color.white;
 			}
 		}
 	

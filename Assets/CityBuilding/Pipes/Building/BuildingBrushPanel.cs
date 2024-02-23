@@ -1,4 +1,5 @@
 using Game.Building;
+using GamePackages.Core;
 using GamePackages.Core.Validation;
 using UnityEngine;
 using UnityEngine.Events;
@@ -8,63 +9,41 @@ namespace Game.GameGui
 {
     public class BuildingBrushPanel : MonoBehaviour
     {
+        [SerializeField, IsntNull] ToggleGroup toggleGroup;
         [SerializeField, IsntNull] Toggle pipeToggle;
         [SerializeField, IsntNull] Toggle productionToggle;
 
-        [Space] [SerializeField, IsntNull] GameObject productionPanel;
-        [SerializeField, IsntNull] Toggle minerToggle;
-        [SerializeField, IsntNull] Toggle converterToggle;
-        [SerializeField, IsntNull] Toggle storeToggle;
-        [SerializeField, IsntNull] Toggle destinationToggle;
+        [Space]
+        [SerializeField, IsntNull] GameObject productionPanel;
+        [SerializeField, IsntNull] Toggle togglePrefab;
 
-        public event UnityAction<BuildingType> SelectBrush;
+        public event UnityAction SelectPipe;
+        
 
-
-        void Start()
+        public void Init()
         {
             pipeToggle.onValueChanged.AddListener(OnClickPipe);
-            productionToggle.onValueChanged.AddListener(OnClickProduction);
-
-            productionPanel.SetActive(false);
-            storeToggle.onValueChanged.AddListener(OnClickStore);
-            destinationToggle.onValueChanged.AddListener(OnClickDestination);
-            minerToggle.onValueChanged.AddListener(OnClickMiner);
-            converterToggle.onValueChanged.AddListener(OnClickConverter);
-
-            pipeToggle.isOn = true;
-            //pipeToggle.OnPointerClick(new PointerEventData(null));
+            productionToggle.onValueChanged.AddListener(OnClickProduction); 
+            productionPanel.SetActive(false);  
+            productionPanel.transform.DestroyChildren();
         }
 
-        void OnClickConverter(bool isOn)
+        public void AddProductionButton(string text, UnityAction onSelect)
         {
-            if (isOn)
-                SelectBrush?.Invoke(BuildingType.ItemConverter);
-        }
+            var toggle = productionPanel.transform.InstantiateAsChild(togglePrefab);
+            toggle.gameObject.SetActive(true);
+            toggle.group = toggleGroup;
+            toggle.onValueChanged.AddListener(isOn => onSelect.Invoke());
 
-        void OnClickMiner(bool isOn)
-        {
-            if (isOn)
-                SelectBrush?.Invoke(BuildingType.ItemMine);
-        }
-
-        void OnClickDestination(bool isOn)
-        {
-            if (isOn)
-                SelectBrush?.Invoke(BuildingType.Destination);
-        }
-
-        void OnClickStore(bool isOn)
-        {
-            if (isOn)
-                SelectBrush?.Invoke(BuildingType.Source);
-        }
+            toggle.GetComponentInChildren<Text>().text = text;
+        } 
 
         void OnClickPipe(bool isOn)
         {
             if (isOn)
             {
                 productionPanel.SetActive(false);
-                SelectBrush?.Invoke(BuildingType.Pipe);
+                SelectPipe?.Invoke();
             }
         }
 

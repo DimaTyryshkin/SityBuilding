@@ -21,7 +21,7 @@ namespace Game.Building
 				cell = item.Cell,
 				amount = item.itemAmount,
 				maxAmount = item.maxItemAmount,
-				pipe = pipes.itemToId[item.pipeQueue],
+				pipe =item.pipeQueue? pipes.itemToId[item.pipeQueue] : 0,
 				resourceName = item.itemName
 			};
 		}
@@ -32,22 +32,17 @@ namespace Game.Building
 
 		protected override void InitAfterInstFormSave(PipeItemDestination item, Vector2Int cell, DestinationJson json, MapBuilder mapBuilder)
 		{
-			item.Init(cell, json.resourceName, json.amount, json.maxAmount);
+			item.Init(json.resourceName, json.amount, json.maxAmount);
 				
 			var pipe = pipes.idToItem.GetValueOrDefault(json.pipe);
 			if(pipe)
 				item.AddInPipe(pipe);
 		}
-
-		public void AfterInstAsNew(PipeItemDestination item, Vector2Int cell, string resourceName)
-		{ 
-			item.Init(cell, resourceName, 0, 1);
-		}
-		
-		public PipeItemDestination InstantiateNewDestination(Vector2Int cell, string resourceName, int amount, int maxAmount, MapBuilder mapBuilder)
+ 
+		public PipeItemDestination InstantiateNewDestination(Vector2Int cell, string resourceName, MapBuilder mapBuilder)
 		{
 			var item = InstantiateAsNew(cell, mapBuilder);
-			item.Init(cell, resourceName, amount, maxAmount);
+			item.Init(resourceName, 0, 1);
 			return item;
 		}
 	}

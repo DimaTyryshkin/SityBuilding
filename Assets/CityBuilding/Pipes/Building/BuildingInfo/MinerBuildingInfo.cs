@@ -1,19 +1,15 @@
-﻿using System.Collections.Generic;
-using Game.Json;
+﻿using Game.Json;
 using GamePackages.Core.Validation;
 using UnityEngine;
 
 namespace Game.Building
 {
-	public sealed class MinerBuildingInfo : BuildingInfo<ItemMiner, ItemMinerJson>
+	public abstract class MinerBuildingInfo : BuildingInfo<ItemMiner, ItemMinerJson>
 	{ 
+		[SerializeField] string resourceName;
+		[SerializeField] Vector2Int sourceOffset;
 		[SerializeField, IsntNull] SourceBuildingInfo sources;
-		
-		protected override List<ItemMinerJson> GetJsonList(MapJson mapJson, MapBuilder mapBuilder)
-		{
-			return mapJson.miners;
-		}
- 
+		 
 		protected override ItemMinerJson PrintToJson(ItemMiner item)
 		{
 			return new ItemMinerJson()
@@ -31,17 +27,17 @@ namespace Game.Building
 
 		protected override void InitAfterInstFormSave(ItemMiner item, Vector2Int cell, ItemMinerJson json, MapBuilder mapBuilder)
 		{
-			item.Init(cell, json.resourceName, sources.idToItem[json.pipeSourceId]);
+			item.Init(json.resourceName, sources.idToItem[json.pipeSourceId]);
 		}
 
-		public void AfterInstAsNew(ItemMiner item, Vector2Int cell, MapBuilder mapBuilder)
-		{
-			string resourceName = "clean-water";
-			Vector2Int sourceOffset = new Vector2Int(2, 0);
+		public void InstantiateNew( Vector2Int cell, MapBuilder mapBuilder)
+		{ 
 			var outSourceCell = cell + sourceOffset;
 
-			PipeItemSource source = sources.InstantiateNewSource(outSourceCell, resourceName, 0, 1, mapBuilder);
-			item.Init(cell, resourceName, source);
+			PipeItemSource source = sources.InstantiateNewSource(outSourceCell, resourceName, mapBuilder);
+
+			var newItem = InstantiateAsNew(cell, mapBuilder);
+			newItem.Init(resourceName, source);
 		}
 	}
 }

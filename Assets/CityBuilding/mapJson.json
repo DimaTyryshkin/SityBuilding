@@ -1,171 +1,70 @@
 {
-    "pipes": [
-        {
-            "id": 1,
-            "cells": [
-                {
-                    "x": -5,
-                    "y": 1
-                },
-                {
-                    "x": -4,
-                    "y": 1
-                },
-                {
-                    "x": -3,
-                    "y": 1
-                },
-                {
-                    "x": -2,
-                    "y": 1
-                },
-                {
-                    "x": -1,
-                    "y": 1
-                },
-                {
-                    "x": 0,
-                    "y": 1
-                },
-                {
-                    "x": 0,
-                    "y": 0
-                },
-                {
-                    "x": 1,
-                    "y": 0
-                },
-                {
-                    "x": 1,
-                    "y": -1
-                },
-                {
-                    "x": 2,
-                    "y": -1
-                }
-            ]
-        },
-        {
-            "id": 2,
-            "cells": [
-                {
-                    "x": 5,
-                    "y": -1
-                },
-                {
-                    "x": 5,
-                    "y": -2
-                },
-                {
-                    "x": 5,
-                    "y": -3
-                },
-                {
-                    "x": 5,
-                    "y": -4
-                },
-                {
-                    "x": 4,
-                    "y": -4
-                },
-                {
-                    "x": 3,
-                    "y": -4
-                },
-                {
-                    "x": 2,
-                    "y": -4
-                },
-                {
-                    "x": 1,
-                    "y": -4
-                },
-                {
-                    "x": 0,
-                    "y": -4
-                },
-                {
-                    "x": -1,
-                    "y": -4
-                },
-                {
-                    "x": -2,
-                    "y": -4
-                },
-                {
-                    "x": -3,
-                    "y": -4
-                },
-                {
-                    "x": -4,
-                    "y": -4
-                },
-                {
-                    "x": -5,
-                    "y": -4
-                }
-            ]
-        }
-    ],
+    "pipes": [],
     "cross": [],
     "sources": [
         {
+            "id": 1,
+            "cell": {
+                "x": 1,
+                "y": -1
+            },
+            "pipe": 0,
+            "resourceName": "clean-water"
+        },
+        {
+            "id": 2,
+            "cell": {
+                "x": 5,
+                "y": 3
+            },
+            "pipe": 0,
+            "resourceName": "clean-water"
+        }
+    ],
+    "destinations": [
+        {
             "id": 3,
             "cell": {
-                "x": -5,
-                "y": 1
+                "x": -2,
+                "y": -1
             },
-            "pipe": 1,
+            "pipe": 0,
             "resourceName": "dirt-water",
-            "amount": 1,
+            "amount": 0,
             "maxAmount": 1
         },
         {
             "id": 4,
             "cell": {
-                "x": 5,
-                "y": -1
+                "x": 2,
+                "y": 3
             },
-            "pipe": 2,
-            "resourceName": "clean-water",
-            "amount": 1,
+            "pipe": 0,
+            "resourceName": "dirt-water",
+            "amount": 0,
             "maxAmount": 1
         }
     ],
-    "destinations": [
+    "dirtWaterMiners": [],
+    "coalMiners": [],
+    "waterCleanerConverters": [
         {
             "id": 5,
             "cell": {
-                "x": 2,
+                "x": -2,
                 "y": -1
             },
-            "pipe": 1,
-            "resourceName": "dirt-water",
-            "amount": 1,
-            "maxAmount": 1
-        }
-    ],
-    "miners": [
+            "inDestinationId": 3,
+            "outSourceId": 1
+        },
         {
             "id": 6,
             "cell": {
-                "x": -7,
-                "y": 1
+                "x": 2,
+                "y": 3
             },
-            "resourceName": "dirt-water",
-            "pipeSourceId": 3
-        }
-    ],
-    "converters": [
-        {
-            "id": 7,
-            "cell": {
-                "x": 3,
-                "y": -1
-            },
-            "converterType": "water-cleaner",
-            "inDestinationId": 5,
-            "outSourceId": 4
+            "inDestinationId": 4,
+            "outSourceId": 2
         }
     ]
 }

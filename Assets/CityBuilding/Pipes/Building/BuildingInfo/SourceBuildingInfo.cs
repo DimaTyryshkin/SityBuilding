@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Game.Json;
 using GamePackages.Core.Validation;
 using UnityEngine;
@@ -20,9 +19,7 @@ namespace Game.Building
 			return new SourceJson()
 			{ 
 				cell = item.Cell,
-				amount = item.itemAmount,
-				maxAmount = item.maxItemAmount,
-				pipe = pipes.itemToId[item.pipeQueue],
+				pipe = item.pipeQueue? pipes.itemToId[item.pipeQueue] : 0,
 				resourceName = item.itemName
 			};
 		}
@@ -33,17 +30,17 @@ namespace Game.Building
 
 		protected override void InitAfterInstFormSave(PipeItemSource item, Vector2Int cell, SourceJson json, MapBuilder mapBuilder)
 		{
-			item.Init(cell, json.resourceName, json.amount, json.maxAmount);
-				
+			item.Init(json.resourceName);
+		
 			var pipe = pipes.idToItem.GetValueOrDefault(json.pipe);
 			if(pipe)
 				item.AddOutPipe(pipe);
 		}
 
-		public PipeItemSource InstantiateNewSource(Vector2Int cell, string resourceName, int amount, int maxAmount, MapBuilder mapBuilder)
+		public PipeItemSource InstantiateNewSource(Vector2Int cell, string resourceName, MapBuilder mapBuilder)
 		{
 			var item = InstantiateAsNew(cell, mapBuilder);
-			item.Init(cell, resourceName, amount, maxAmount);
+			item.Init(resourceName);
 			return item;
 		}
 	}
