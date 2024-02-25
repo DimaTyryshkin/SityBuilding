@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 namespace Game
 {
@@ -18,6 +18,9 @@ namespace Game
 		[SerializeField] Transform viewCamera;  
 		[SerializeField] Gun gun;
 
+		public float HorizontalKickbackAngle => horizontalKickbackAngle;
+		public float VerticalKickbackAngle => verticalKickbackAngle;
+		
 		float time;
 		float lastHorizontalKickbackAngle;
 		bool isShot;
@@ -25,9 +28,14 @@ namespace Game
 		float shotEndTime;
 		float lastShotAngle;
 
-		void Start()
+		void OnEnable()
 		{
 			gun.Shot += OnGun_Shot;
+		}
+
+		void OnDisable()
+		{
+			gun.Shot -= OnGun_Shot;
 		}
 
 		void Update()

@@ -6,7 +6,8 @@ using UnityEngine.ProBuilder;
 namespace Game
 { 
 	public class Bullet : MonoBehaviour
-	{
+	{ 
+		public const float MaxDistance = 200;
 		[SerializeField] float speed;
 		[SerializeField] GameObject hitViewPrefab;
 		[SerializeField] TrailRenderer trailRenderer;
@@ -21,7 +22,7 @@ namespace Game
 			this.dir = dir.normalized;
 			trailTimeLife = 0;
 			skipFrame = false; 
-			stopTime = Time.time + 2000 / speed;
+			stopTime = Time.time + MaxDistance / speed;
 		}
 
 		void Update()

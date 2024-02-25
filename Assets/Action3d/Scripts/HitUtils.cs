@@ -24,7 +24,7 @@ namespace Game
 	{
 		static RaycastHit[] raycastHit;
 		
-		public static HitInfo RayCast(Vector3 point, Vector3 dir, float distance = 2000)
+		public static HitInfo RayCast(Vector3 point, Vector3 dir, float distance = Bullet.MaxDistance)
 		{
 #if UNITY_EDITOR
 			Assert.IsTrue(Mathf.Approximately(dir.magnitude,1f));

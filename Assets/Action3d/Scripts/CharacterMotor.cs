@@ -25,6 +25,7 @@ namespace Game
 	    Vector3 oldPos;
 	    bool isGrounded;
 	    bool isGroundedForJump;
+	    int rotateFrameCounter;
 	    
 	    // Jump
 	    bool isJump;
@@ -44,14 +45,17 @@ namespace Game
 		    private set;
 	    }
 	    
-	    public float ViewAngleX
+	    public float ViewAngleVertical
 	    {
 		    get;
 		    private set;
 	    }
 
+	    public Vector3 ViewDir => thisCamera.forward;
+
 	    void Start()
 	    {
+		    rotateFrameCounter = 3; 
 		    valuesForAnimator = new ValuesForAnimator();
 		    oldPos = transform.position; 
         }
@@ -77,12 +81,30 @@ namespace Game
 		    //thisCamera.LookAt(thisCamera.position + viewDir);
 		    
 		    // Rotate 2
-		    transform.Rotate(0, rotationInput.x, 0, Space.Self);
-		    thisCamera.Rotate(rotationInput.y, 0, 0, Space.Self);
-		    ViewAngleX = thisCamera.transform.localRotation.eulerAngles.x; 
-		    rotationInput = Vector2.zero;
+		    if (rotateFrameCounter < 0)
+		    { 
+			    transform.Rotate(0, rotationInput.x, 0, Space.Self);
+			    thisCamera.Rotate(rotationInput.y, 0, 0, Space.Self);
+			    float xAngle = thisCamera.transform.eulerAngles.x; 
+			    if (xAngle is > 80 and <= 180)
+			    {
+				    xAngle = 80;
+				    thisCamera.transform.localEulerAngles = new Vector3(xAngle,0,0);
+			    }
+			    else if (xAngle is < 360 - 80 and > 180)
+			    {
+				    xAngle = (360 - 80);
+				    thisCamera.transform.localEulerAngles = new Vector3(xAngle, 0, 0);
+			    }
 
-
+			    ViewAngleVertical = xAngle;
+			    rotationInput = Vector2.zero;
+		    }
+		    else
+		    {
+			    rotateFrameCounter--;
+		    }
+		    
 		    // Move
 		    if (isGrounded)
 		    {

@@ -1,8 +1,9 @@
-﻿using GamePackages.Core.Validation;
+﻿using System;
+using GamePackages.Core.Validation;
 using UnityEngine;
 
 namespace Game
-{  
+{
 	public class PlayerInput : MonoBehaviour
 	{
 		[SerializeField, IsntNull] float rotationSensitivity;

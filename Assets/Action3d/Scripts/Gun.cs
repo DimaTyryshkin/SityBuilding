@@ -47,7 +47,7 @@ namespace Game
 
 		void Update()
 		{
-			float angle = characterMove.ViewAngleX;
+			float angle = characterMove.ViewAngleVertical;
 			if (angle > 90)
 				angle -= 360;
 
