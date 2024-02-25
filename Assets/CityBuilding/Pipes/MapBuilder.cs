@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Game.Building;
 using Game.Json;
 using GamePackages.Core;
 using GamePackages.Core.Validation;
 using NaughtyAttributes;
-using UnityEditor;
 using UnityEngine; 
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Game
 {
@@ -74,14 +76,17 @@ namespace Game
  
 		void LoadFromJson(TextAsset jsonFile)
 		{
+#if UNITY_EDITOR
 			string fileName = AssetDatabase.GetAssetPath(jsonFile);
 			string json = File.ReadAllText(fileName);
 			map = JsonUtility.FromJson<MapJson>(json); 
 			LoadFromJson();
+#endif
 		}
 		   
 		void PrintToJson(TextAsset jsonFile)
 		{ 
+#if UNITY_EDITOR
 			map = new MapJson();
 
 			actualId = 0;
@@ -92,6 +97,7 @@ namespace Game
 			string fileName = AssetDatabase.GetAssetPath(jsonFile);
 			Debug.Log(fileName);
 			File.WriteAllText(fileName, mapJson);
+#endif
 		}
 
 

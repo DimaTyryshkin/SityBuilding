@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using GamePackages.Core;
 using NaughtyAttributes;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Game
 {
@@ -161,7 +164,9 @@ namespace Game
 		[Button()]
 		void Load()
 		{
+#if UNITY_EDITOR
 			Undo.RecordObject(this, "Load");
+#endif
 			
 			storages = FindObjectsOfType<ResourceStorage>();
 			cars = FindObjectsOfType<Car>();
