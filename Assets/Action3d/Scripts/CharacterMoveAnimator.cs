@@ -10,7 +10,7 @@ namespace Game
 		static readonly int jumpHash = Animator.StringToHash("IsJump");
 		static readonly int shotHash = Animator.StringToHash("Shot");
 
-		[SerializeField, IsntNull] CharacterMove motor;
+		[SerializeField, IsntNull] CharacterMotor motor;
 		[SerializeField, IsntNull] Gun gun;
 		[SerializeField, IsntNull] Animator animator;
 

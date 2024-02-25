@@ -2,11 +2,8 @@ using UnityEngine;
 
 namespace Game
 {
-	public class CharacterMove : MonoBehaviour
+	public class CharacterMotor : MonoBehaviour
     {
-	    [SerializeField] float rotationSensitivity;
-	 
-	    
 	    [Space]
 	    [SerializeField] float speed;
 	    [SerializeField] float gravityScale;

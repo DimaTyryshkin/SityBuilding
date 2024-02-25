@@ -19,7 +19,7 @@ namespace Game
 		[SerializeField] Animator handsAnimator;
 		[SerializeField] Transform handRoot;
 		[SerializeField] AnimationCurve handRootYFromViewAngle;
-		[SerializeField] CharacterMove characterMove;
+		[SerializeField] CharacterMotor characterMove;
 		[SerializeField] float speed;
 		[SerializeField] float shotsInSecond;
 		[SerializeField] float audioStartTime;  
@@ -31,6 +31,8 @@ namespace Game
 
 		public event UnityAction Shot;
 
+		bool shotInput;
+		bool reloadInput;
 		bool isReloading;
 		float timeNextShot;
 		int bullets;
@@ -52,13 +54,13 @@ namespace Game
 			float handY = handRootYFromViewAngle.Evaluate(angle);
 			handRoot.localPosition = new Vector3(0, handY, 0);
 
-			if (!isReloading && bullets < bulletsMax && Input.GetKeyDown(KeyCode.R))
+			if (!isReloading && bullets < bulletsMax && reloadInput)
 			{ 
 				StartReload();
 				return;
 			}
 
-			if (!isReloading && Input.GetKey(KeyCode.Mouse0))
+			if (!isReloading && shotInput)
 			{ 
 				if (Time.time > timeNextShot)
 				{
@@ -86,7 +88,13 @@ namespace Game
 					}
 				} 
 			}
+
+			shotInput = false;
 		}
+
+		public void ShotInput() => shotInput = true;
+		public void ReloadInput() => reloadInput = true;
+		
 
 		void ShotBullet()
 		{
@@ -112,6 +120,7 @@ namespace Game
 			yield return new WaitForSeconds(reloadClip.length);
 			bullets = bulletsMax;
 			isReloading = false;
+			reloadInput = false;
 		}
 
 		void ShotLine()

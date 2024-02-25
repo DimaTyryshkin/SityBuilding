@@ -14,7 +14,7 @@ namespace Game
 		[SerializeField] AnimationCurve kickbackCurve;
 
 		[Space]
-		[SerializeField] CharacterMove move;
+		[SerializeField] CharacterMotor move;
 		[SerializeField] Transform viewCamera;  
 		[SerializeField] Gun gun;
 

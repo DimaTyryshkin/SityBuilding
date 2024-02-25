@@ -1,11 +1,13 @@
-﻿using UnityEngine;
+﻿using GamePackages.Core.Validation;
+using UnityEngine;
 
 namespace Game
-{
+{  
 	public class PlayerInput : MonoBehaviour
 	{
-		[SerializeField] float rotationSensitivity;
-		[SerializeField] CharacterMove characterMove; 
+		[SerializeField, IsntNull] float rotationSensitivity;
+		[SerializeField, IsntNull] CharacterMotor characterMove; 
+		[SerializeField, IsntNull] Gun gun; 
 		
 		int rotateFrameCounter;
   
@@ -44,6 +46,12 @@ namespace Game
 
 			if (Input.GetKeyDown(KeyCode.Space))
 				characterMove.Jump();
+			
+			if(Input.GetKeyDown(KeyCode.R))
+				gun.ReloadInput();
+			
+			if(Input.GetMouseButton(0))
+				gun.ShotInput();
 		}
 	}
 }
