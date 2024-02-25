@@ -10,8 +10,11 @@ namespace Game
 {
 	public class CharacterMove : MonoBehaviour
     {
-	    [SerializeField] float speed;
 	    [SerializeField] float rotationSensitivity;
+	 
+	    
+	    [Space]
+	    [SerializeField] float speed;
 	    [SerializeField] float gravityScale;
 	    [SerializeField] AnimationCurve jumpCurve;
 	    
@@ -21,11 +24,12 @@ namespace Game
 	    [SerializeField] Transform groundCheck;
 	    [SerializeField] LayerMask checkGroundMask;
 
+	    
+	    
 	    float fallSpeed;
 	    Vector3 motionByLegs;
 	    Vector3 gravityMotion;
 	    Vector3 oldPos;
-	    int rotateFrameCounter;
 	    bool isGrounded;
 	    bool isGroundedForJump;
 	    
@@ -34,6 +38,12 @@ namespace Game
 	    float jumpStartTime;
 	    float jumpEndTime;
 	    float jumpStartY;
+	    
+	    // Input
+	    Vector2 rotationInput;
+	    Vector2 moveInput;
+	    bool jumpInput;
+	    
 
 	    public float SpeedByLegs
 	    {
@@ -50,39 +60,47 @@ namespace Game
 	    void Start()
 	    {
 		    oldPos = transform.position;
-		    rotateFrameCounter = 3;
-	        Cursor.lockState = CursorLockMode.Locked; 
+		   
         }
 
+ 
+	    public void RotateHorizontal(float angle) => rotationInput.x+=angle; 
+	    public void RotateVertical(float angle) => rotationInput.y+=angle;
+
+	    public void Move(Vector2 moveInput) => this.moveInput += moveInput;
+	    public void Jump() => jumpInput = true;
 
 	    void Update()
 	    { 
 		    Vector3 deltaPos = transform.position - oldPos;
 		    fallSpeed = Mathf.Max(fallSpeed, -deltaPos.y / (Time.deltaTime + 0.01f));
-			    
-		    // Rotate
-		    if (rotateFrameCounter < 0)
-		    {
-			    transform.Rotate(0, Input.GetAxis("Mouse X") * Time.deltaTime * rotationSensitivity, 0, Space.Self);
-			    thisCamera.Rotate(-Input.GetAxis("Mouse Y") * Time.deltaTime * rotationSensitivity, 0, 0, Space.Self);
-			    ViewAngleX = thisCamera.transform.localRotation.eulerAngles.x;
-		    }
-		    else
-		    {
-			    rotateFrameCounter--;
-		    }
+
+		
+		      
+		    // Rotate 1
+		    //Vector3 viewDirXZ = viewDir;
+		    //viewDirXZ.y = 0;
+		    //transform.LookAt(transform.position + viewDirXZ);
+		    //thisCamera.LookAt(thisCamera.position + viewDir);
+		    
+		    // Rotate 2
+		    transform.Rotate(0, rotationInput.x, 0, Space.Self);
+		    thisCamera.Rotate(rotationInput.y, 0, 0, Space.Self);
+		    ViewAngleX = thisCamera.transform.localRotation.eulerAngles.x; 
+		    rotationInput = Vector2.zero;
 
 
 		    // Move
 		    if (isGrounded)
-		    { 
-			    float forwardInput = Input.GetAxis("Vertical");
-			    float horizontalInput = Input.GetAxis("Horizontal");
+		    {
+			    float forwardInput = Mathf.Clamp(moveInput.x, -1, 1);
+			    float horizontalInput = Mathf.Clamp(moveInput.y, -1, 1);
+			    moveInput = Vector2.zero;
 
 			    motionByLegs = (transform.forward * forwardInput + transform.right * horizontalInput) * speed;
 			    SpeedByLegs = motionByLegs.magnitude;
 		    }
-  
+
 		    if (!isJump)
 		    {
 			    float add = Time.deltaTime * gravityScale; 
@@ -90,9 +108,8 @@ namespace Game
 		    }
 		    
 	        // Lump
-	        if (Input.GetKeyDown(KeyCode.Space) )
-	        {
-		        Debug.Log($"[d] isJump={isJump} isGrounded={isGroundedForJump}");
+	        if (jumpInput)
+	        { 
 		        if (!isJump && isGroundedForJump)
 		        {
 			        isGrounded = false;
@@ -103,6 +120,8 @@ namespace Game
 			        jumpEndTime = jumpStartTime + jumpCurve.keys[jumpCurve.length - 1].time;
 		        }
 	        }
+
+	        jumpInput = false;
 
 	      
 	        

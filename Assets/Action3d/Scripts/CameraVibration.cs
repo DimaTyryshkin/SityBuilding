@@ -16,7 +16,6 @@ namespace Game
 		[Space]
 		[SerializeField] CharacterMove move;
 		[SerializeField] Transform viewCamera;  
-		[SerializeField] Transform cameraRotationRoot; 
 		[SerializeField] Gun gun;
 
 		float time;
@@ -42,15 +41,16 @@ namespace Game
 			{
 				time = 0;
 			}
-			
+
 			if (isShot)
 			{
 				float shotTime = Time.time - shotStartTime;
-				float angle = - kickbackCurve.Evaluate(shotTime);
+				float angle = -kickbackCurve.Evaluate(shotTime);
 				float deltaAngle = angle - lastShotAngle;
 				lastShotAngle = angle;
-				cameraRotationRoot.Rotate(deltaAngle * verticalKickbackAngle,0,0,Space.Self);
-				transform.Rotate(0, deltaAngle * lastHorizontalKickbackAngle, 0, Space.Self);
+				move.RotateVertical(deltaAngle * verticalKickbackAngle);
+				move.RotateHorizontal(deltaAngle * lastHorizontalKickbackAngle);
+				
 				if (Time.time > shotEndTime)
 					isShot = false;
 			}

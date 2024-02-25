@@ -3503,6 +3503,7 @@ GameObject:
   - component: {fileID: 2737582142269396630}
   - component: {fileID: 2737582142269396629}
   - component: {fileID: 2737582142269396632}
+  - component: {fileID: 2737582142269396633}
   m_Layer: 6
   m_Name: Player +
   m_TagString: Untagged
@@ -3574,8 +3575,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efe4f74d5d3b4a84690b6e46c7c4a92e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
   rotationSensitivity: 150
+  speed: 5
   gravityScale: 8
   jumpCurve:
     serializedVersion: 2
@@ -3669,6 +3670,22 @@ MonoBehaviour:
   viewCamera: {fileID: 1704006605}
   cameraRotationRoot: {fileID: 2737582141761884377}
   gun: {fileID: 2737582142269396629}
+--- !u!114 &2737582142269396633
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2737582142269396627}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 216508c5f42b4fc7972faac709a93655, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationSensitivity: 150
+  characterMove: {fileID: 2737582142269396630}
+  fpsCamera: {fileID: 2737582141761884377}
+  viewDir: {x: 0, y: 0, z: 0}
 --- !u!54 &2737582143019319169
 Rigidbody:
   m_ObjectHideFlags: 0

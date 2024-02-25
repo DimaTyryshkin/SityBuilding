@@ -30,15 +30,24 @@ namespace Game
             root = go.transform;
         }
 
-        public Character BuildPlayer(Vector3 point)
+        public Character SpawnPlayer(Vector3 point)
         {
             GameObject player = root.InstantiateAsChild(playerPrefab);
             CharacterMotor motor = player.GetComponent<CharacterMotor>();
-            Character character = player.GetComponent<Character>();
-            Assert.IsNotNull(character);
-            
             motor.Warp(point);
 
+            Character character = InitPlayer(player);
+             
+            player.SetActive(true);
+            player.gameObject.name = "Player";
+            return character;
+        }
+
+        public Character InitPlayer(GameObject player)
+        { 
+            Character character = player.GetComponent<Character>();
+            Assert.IsNotNull(character);
+              
             var go = new GameObject("MouseAndKeyboardInput");
             go.transform.SetParent(root);
 
@@ -47,10 +56,7 @@ namespace Game
             
             var input = go.AddComponent<MouseAndKeyboardInput>();
             input.Init(followCamera.Camera, character);
-              
-            player.SetActive(true);
-            player.gameObject.name = "Player";
-            this.player = character;
+            this.player = character; 
             return character;
         }
 
