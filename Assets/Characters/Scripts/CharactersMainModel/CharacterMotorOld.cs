@@ -1,9 +1,10 @@
-﻿using GamePackages.Core.Validation;
+﻿using System;
+using GamePackages.Core.Validation;
 using UnityEngine;
 
 namespace Game
-{
-    public class CharacterMotor : MonoBehaviour
+{ 
+    public class CharacterMotorOld : MonoBehaviour
     {
         [SerializeField, IsntNull]
         CharacterViewData view;

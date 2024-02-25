@@ -1,10 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using NaughtyAttributes;
-using Unity.Burst;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Game
 {
@@ -24,8 +18,10 @@ namespace Game
 	    [SerializeField] Transform groundCheck;
 	    [SerializeField] LayerMask checkGroundMask;
 
+
+	    public ValuesForAnimator ForAnimator => valuesForAnimator;
 	    
-	    
+	    ValuesForAnimator valuesForAnimator;
 	    float fallSpeed;
 	    Vector3 motionByLegs;
 	    Vector3 gravityMotion;
@@ -59,8 +55,8 @@ namespace Game
 
 	    void Start()
 	    {
-		    oldPos = transform.position;
-		   
+		    valuesForAnimator = new ValuesForAnimator();
+		    oldPos = transform.position; 
         }
 
  
@@ -97,6 +93,9 @@ namespace Game
 			    float horizontalInput = Mathf.Clamp(moveInput.y, -1, 1);
 			    moveInput = Vector2.zero;
 
+			    valuesForAnimator.forwardSpeed = fallSpeed;
+			    valuesForAnimator.rightSpeed = horizontalInput;
+			    
 			    motionByLegs = (transform.forward * forwardInput + transform.right * horizontalInput) * speed;
 			    SpeedByLegs = motionByLegs.magnitude;
 		    }
@@ -121,6 +120,7 @@ namespace Game
 		        }
 	        }
 
+	        valuesForAnimator.isJump = isJump;
 	        jumpInput = false;
 
 	      
@@ -153,5 +153,12 @@ namespace Game
 	        isGroundedForJump = Physics.CheckSphere(groundCheck.position, 0.6f,checkGroundMask); 
 	        isGrounded = Physics.CheckSphere(groundCheck.position, 0.5f,checkGroundMask); 
 	    } 
+	    
+	    public class ValuesForAnimator
+	    {
+		    public float forwardSpeed;
+		    public float rightSpeed;
+		    public bool isJump;
+	    }
     }
 }

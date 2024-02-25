@@ -33,7 +33,7 @@ namespace Game
         public Character SpawnPlayer(Vector3 point)
         {
             GameObject player = root.InstantiateAsChild(playerPrefab);
-            CharacterMotor motor = player.GetComponent<CharacterMotor>();
+            CharacterMotorOld motor = player.GetComponent<CharacterMotorOld>();
             motor.Warp(point);
 
             Character character = InitPlayer(player);
@@ -72,7 +72,7 @@ namespace Game
         {
             GameObject zombie = root.InstantiateAsChild(zombiePrefab);
 
-            CharacterMotor motor = zombie.GetComponent<CharacterMotor>();
+            CharacterMotorOld motor = zombie.GetComponent<CharacterMotorOld>();
             Enemy character = zombie.GetComponent<Enemy>();
 
             motor.Warp(pos);

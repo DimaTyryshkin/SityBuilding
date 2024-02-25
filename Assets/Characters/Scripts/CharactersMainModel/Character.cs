@@ -15,7 +15,7 @@ namespace Game
         protected CharacterViewData view;
 
         [SerializeField, IsntNull]
-        protected CharacterMotor motor;
+        protected CharacterMotorOld motor;
 
         [SerializeField, IsntNull]
         protected MeleeAttack meleeAttack;
