@@ -42,7 +42,7 @@ namespace Game
 			{
 				float forwardInput = Input.GetAxis("Vertical");
 				float horizontalInput = Input.GetAxis("Horizontal");
-				characterMove.Move(new Vector2(forwardInput, horizontalInput));
+				characterMove.MoveInput(new Vector2(forwardInput, horizontalInput));
 			}
 
 			if (Input.GetKeyDown(KeyCode.Space))

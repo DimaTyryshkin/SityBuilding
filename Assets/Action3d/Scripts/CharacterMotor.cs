@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.ProBuilder.MeshOperations;
 
 namespace Game
 {
@@ -36,6 +38,8 @@ namespace Game
 	    // Input
 	    Vector2 rotationInput;
 	    Vector2 moveInput;
+	    Vector3 moveDirInput;
+	    bool dirInputMode;
 	    bool jumpInput;
 	    
 
@@ -64,8 +68,26 @@ namespace Game
 	    public void RotateHorizontal(float angle) => rotationInput.x+=angle; 
 	    public void RotateVertical(float angle) => rotationInput.y+=angle;
 
-	    public void Move(Vector2 moveInput) => this.moveInput += moveInput;
+	    public void MoveInput(Vector2 moveInput)
+	    {
+		    dirInputMode = false;
+		    this.moveInput += moveInput;
+	    }
+
+	    public void MoveDirInput(Vector3 moveDirInput)
+	    {
+		    dirInputMode = true;
+		    this.moveDirInput += moveDirInput;
+	    }
+	    
 	    public void Jump() => jumpInput = true;
+
+	    Vector3 lastMotionByLegs;
+	    void OnDrawGizmos()
+	    {
+		    Gizmos.color = Color.red;
+		    Gizmos.DrawLine(transform.position , transform.position + lastMotionByLegs);
+	    }
 
 	    void Update()
 	    { 
@@ -108,15 +130,32 @@ namespace Game
 		    // Move
 		    if (isGrounded)
 		    {
-			    float forwardInput = Mathf.Clamp(moveInput.x, -1, 1);
-			    float horizontalInput = Mathf.Clamp(moveInput.y, -1, 1);
-			    moveInput = Vector2.zero;
+			    float forwardInput = 0;
+			    float horizontalInput = 0;
+
+			    if (dirInputMode)
+			    {
+				    forwardInput = Vector3.Dot(moveDirInput, transform.forward);
+				    horizontalInput = Vector3.Dot(moveDirInput, transform.right);
+			    }
+			    else
+			    {
+				    if (moveInput.magnitude > 0)
+					    moveInput.Normalize();
+
+				    forwardInput = Mathf.Clamp(moveInput.x, -1, 1);
+				    horizontalInput = Mathf.Clamp(moveInput.y, -1, 1);
+			    }
 
 			    valuesForAnimator.forwardSpeed = fallSpeed;
 			    valuesForAnimator.rightSpeed = horizontalInput;
-			    
-			    motionByLegs = (transform.forward * forwardInput + transform.right * horizontalInput) * speed;
+
+			    lastMotionByLegs = (transform.forward * forwardInput + transform.right * horizontalInput) * speed;
+			    motionByLegs = lastMotionByLegs;
 			    SpeedByLegs = motionByLegs.magnitude;
+			    
+			    moveDirInput = Vector3.zero;
+			    moveInput = Vector2.zero;
 		    }
 
 		    if (!isJump)

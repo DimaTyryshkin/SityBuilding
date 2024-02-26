@@ -1,12 +1,14 @@
 ﻿using GamePackages.Core;
 using GamePackages.Core.Validation;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace Game
 {
 	public class EnemyAiInput : MonoBehaviour
 	{
 		[SerializeField, IsntNull] Transform target;
+		[SerializeField, IsntNull] Transform navMeshPipette;
 		[SerializeField, IsntNull] Transform thisCamera;
 		[SerializeField, IsntNull] CharacterMotor motor;
 		[SerializeField, IsntNull] CameraVibration cameraVibration;
@@ -14,8 +16,12 @@ namespace Game
 		[SerializeField, IsntNull] float rotationSpeed = 100;
 		[SerializeField, IsntNull] AnimationCurve shotAngleThresholdFromDistance;
 		[SerializeField, IsntNull] bool canShot = true;
+		[SerializeField, IsntNull] RangeMinMaxInt shotAmount;
+		[SerializeField, IsntNull] int shotDelay = 2;
 
 		Vector3 viewDir;
+		int shotCount;
+		float timeNextShot;
 		
 		
 		[Header("Kickback")]
@@ -23,10 +29,17 @@ namespace Game
 		RangeMinMax horizontalKickback;
 		RangeMinMax verticalKickback;
 		Vector2 deviation;
+		
+		[Header("Move")]
+		[SerializeField, IsntNull] NavMeshAgent navMeshAgent;
+		[SerializeField] bool isMove;
+		NavMeshPath path;
+		int actualPathCornerIndex;
 
 
 		void Start()
 		{
+			shotCount = -1;
 			horizontalKickback = new RangeMinMax(
 				-cameraVibration.HorizontalKickbackAngle * 3f,
 				+cameraVibration.HorizontalKickbackAngle * 3f
@@ -39,6 +52,16 @@ namespace Game
 			
 			viewDir = motor.ViewDir;
 			gun.Shot += OnGun_Shot;
+			
+			// Move
+			
+			navMeshAgent.isStopped = true;
+			navMeshAgent.updatePosition = false;
+			navMeshAgent.updateRotation = false;
+			navMeshAgent.updateUpAxis = false;
+
+			path = new NavMeshPath();
+			actualPathCornerIndex = -1;
 		}
 
 
@@ -61,15 +84,15 @@ namespace Game
 				// toTarget = Quaternion.AngleAxis(horizontalDeviation, Vector3.up) * toTarget;
 				// toTarget = Quaternion.AngleAxis(verticalDeviation, thisCamera.right) * toTarget;
 			}
-			
+
 			// Random
-			{ 
+			{
 				toTarget = Quaternion.AngleAxis(deviation.x, Vector3.up) * toTarget;
 				toTarget = Quaternion.AngleAxis(deviation.y, thisCamera.right) * toTarget;
 				deviation = Vector3.Lerp(deviation, Vector2.zero, Time.deltaTime * kickbackSpeed);
 			}
-			
-			
+
+
 			// To target
 			Vector3 toTargetHorizontal = toTarget;
 			toTargetHorizontal.y = 0;
@@ -91,17 +114,35 @@ namespace Game
 			if (Mathf.Abs(horizontalAngle) < 45)
 			{
 				float verticalAngleDelta = Mathf.Clamp(verticalAngle, -maxAngle, maxAngle);
-				motor.RotateVertical(verticalAngleDelta); 
+				motor.RotateVertical(verticalAngleDelta);
 			}
-			
+
 			// Shot
-			if(canShot)
+			if (canShot && Time.time > timeNextShot)
 			{
 				float shotThreshold = shotAngleThresholdFromDistance.Evaluate(toTarget.magnitude);
 				if (Mathf.Abs(horizontalAngle) < shotThreshold && Mathf.Abs(verticalAngle) < shotThreshold)
+				{
+					if (shotCount < 0)
+						StartShotCounter();
+
+					//TODO Первый выстрел всегда идеальный, это плохо
 					gun.ShotInput();
+				}
+				else
+				{
+					shotCount = -1;
+				}
+			}
+			
+			// Move
+			if (actualPathCornerIndex != -1)
+			{
+				AiMove();
 			}
 		}
+
+		
 
 		void OnGun_Shot()
 		{
@@ -110,6 +151,64 @@ namespace Game
 				horizontalKickback.Random(), // [-1.5, 1.5] хорошо сомтрится 
 				verticalKickback.Random() // [3,-4] хорошо сомтрится
 			);
+			
+			
+			shotCount--;
+			if (shotCount == 0)
+			{
+				StartShotCounter();
+				timeNextShot = Time.time + shotDelay;
+			}
+		}
+
+		void StartShotCounter()
+		{
+			shotCount = shotAmount.Random();
+		}
+
+
+		Vector3 lastInput;
+		void OnDrawGizmos()
+		{
+			if (path != null && path.corners != null && path.corners.Length > 0 && actualPathCornerIndex >= 0)
+			{
+				Gizmos.color = Color.white;
+				GizmosExtension.DrawLines(path.corners,0.05f);
+				
+				Vector3 pathPoint = path.corners[actualPathCornerIndex];
+				Gizmos.color = Color.blue;
+				Gizmos.DrawLine(transform.position, pathPoint);
+				Gizmos.color = Color.black;
+				Gizmos.DrawLine(transform.position, transform.position + lastInput);
+			}
+
+		}
+		
+		void AiMove()
+		{  
+			Vector3 pathPoint = path.corners[actualPathCornerIndex];
+			//Vector3 pathDir = pathPoint - path.corners[actualPathCornerIndex - 1];
+			Vector3 toTarget = pathPoint - transform.position;
+			if (isMove && Vector3.Distance(navMeshPipette.position, pathPoint) < 0.1f)
+			{
+				actualPathCornerIndex++;
+
+				if (actualPathCornerIndex >= path.corners.Length)
+					actualPathCornerIndex = -1;
+			}
+
+			toTarget.y = 0;
+			lastInput = toTarget.normalized;
+			motor.MoveDirInput(lastInput);
+		}
+		
+		public void SetDestination(Vector3 point)
+		{
+			navMeshAgent.Warp(transform.position);
+			bool success = navMeshAgent.CalculatePath(point, path);
+			//bool success = NavMesh.CalculatePath(transform.position, point, NavMesh.AllAreas, path);
+
+			actualPathCornerIndex = success ? 1 : -1;
 		}
 	}
 }
