@@ -24,7 +24,7 @@ namespace Game
 	{
 		static RaycastHit[] raycastHit;
 		
-		public static HitInfo RayCast(Vector3 point, Vector3 dir, float distance = Bullet.MaxDistance)
+		public static HitInfo RayCast(Vector3 point, Vector3 dir, LayerMask layerMask,float distance = Bullet.MaxDistance)
 		{
 #if UNITY_EDITOR
 			Assert.IsTrue(Mathf.Approximately(dir.magnitude,1f));
@@ -34,7 +34,7 @@ namespace Game
 				raycastHit = new RaycastHit[100];
  
 			HitInfo hit = new HitInfo();
-			int count = Physics.RaycastNonAlloc(point, dir, raycastHit, distance);
+			int count = Physics.RaycastNonAlloc(point, dir, raycastHit, distance, layerMask);
 			int index = raycastHit.MinIndex(r => r.distance, count);
 			 
 			if (index == -1)

@@ -62,7 +62,7 @@ namespace Game
 
             if (target)
             {
-                target.SetDamage();
+                target.ApplyDamage(new Damage(){damage = 1} );
 
                 if (debug)
                 {

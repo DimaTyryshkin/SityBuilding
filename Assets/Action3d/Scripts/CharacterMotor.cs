@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.ProBuilder.MeshOperations;
+using UnityEngine.Serialization;
 
 namespace Game
 {
@@ -9,6 +10,7 @@ namespace Game
 	    [Space]
 	    [SerializeField] float speed;
 	    [SerializeField] float gravityScale;
+	    [SerializeField] float inputLerpFactor = 1;
 	    [SerializeField] AnimationCurve jumpCurve;
 	    
 	    [Space]
@@ -37,6 +39,7 @@ namespace Game
 	    
 	    // Input
 	    Vector2 rotationInput;
+	    Vector2 moveInputValue;
 	    Vector2 moveInput;
 	    Vector3 moveDirInput;
 	    bool dirInputMode;
@@ -146,11 +149,15 @@ namespace Game
 				    forwardInput = Mathf.Clamp(moveInput.x, -1, 1);
 				    horizontalInput = Mathf.Clamp(moveInput.y, -1, 1);
 			    }
+ 
+			    Vector2 newMoveInputValue = new Vector2(forwardInput, horizontalInput);
+			    moveInputValue = Vector2.MoveTowards(moveInputValue, newMoveInputValue, inputLerpFactor * Time.deltaTime);
+			    
+			    
+			    valuesForAnimator.forwardSpeed = moveInputValue.x;
+			    valuesForAnimator.rightSpeed = moveInputValue.y;
 
-			    valuesForAnimator.forwardSpeed = fallSpeed;
-			    valuesForAnimator.rightSpeed = horizontalInput;
-
-			    lastMotionByLegs = (transform.forward * forwardInput + transform.right * horizontalInput) * speed;
+			    lastMotionByLegs = (transform.forward * moveInputValue.x + transform.right * moveInputValue.y) * speed;
 			    motionByLegs = lastMotionByLegs;
 			    SpeedByLegs = motionByLegs.magnitude;
 			    

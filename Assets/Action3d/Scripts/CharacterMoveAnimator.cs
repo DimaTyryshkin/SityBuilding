@@ -13,7 +13,10 @@ namespace Game
 		[SerializeField, IsntNull] CharacterMotor motor;
 		[SerializeField, IsntNull] Gun gun;
 		[SerializeField, IsntNull] Animator animator;
+		[SerializeField, IsntNull] float factorF =1;
+		[SerializeField, IsntNull] float factorR =1;
 
+		
 		void Start()
 		{
 			gun.Shot += OnGun_Shoot;
@@ -26,9 +29,9 @@ namespace Game
 
 		void Update()
 		{
-			animator.SetFloat(speedForwardHash, motor.ForAnimator.forwardSpeed);
-			animator.SetFloat(speedRightHash, motor.ForAnimator.rightSpeed);
-			animator.SetBool(jumpHash, motor.ForAnimator.isJump);
+			animator.SetFloat(speedForwardHash, motor.ForAnimator.forwardSpeed * factorF);
+			animator.SetFloat(speedRightHash, motor.ForAnimator.rightSpeed * factorR);
+			//animator.SetBool(jumpHash, motor.ForAnimator.isJump);
 		}
 	}
 }

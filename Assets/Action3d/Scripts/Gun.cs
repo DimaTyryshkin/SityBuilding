@@ -24,6 +24,7 @@ namespace Game
 		[SerializeField] float shotsInSecond;
 		[SerializeField] float audioStartTime;  
 		[SerializeField] int bulletsMax;
+		[SerializeField] LayerMask layerMask;
 		
 		
 		[SerializeField] AudioClip noBulletClip;
@@ -125,7 +126,7 @@ namespace Game
 
 		void ShotLine()
 		{
-			HitInfo hit = HitUtils.RayCast(viewCamera.position, viewCamera.forward);
+			HitInfo hit = HitUtils.RayCast(viewCamera.position, viewCamera.forward, layerMask);
 			Vector3 dir = hit.point - spawnPoint.position;
 
 			Bullet bullet = Instantiate(bulletPrefab2, spawnPoint.position, Quaternion.identity);

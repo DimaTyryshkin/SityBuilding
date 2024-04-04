@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b110f1cbd12e4d039d06163ae19b7fa8, type: 3}
+  m_Name: ProductsData
+  m_EditorClassIdentifier: 
+  fuelColor: {r: 0.6, g: 0.6156863, b: 1, a: 1}
+  shellColor: {r: 1, g: 0.6313726, b: 0.6, a: 1}
+  foodColor: {r: 0.6, g: 1, b: 0.60784316, a: 1}
+  materialsColor: {r: 0.60784316, g: 0.60784316, b: 0.60784316, a: 1}

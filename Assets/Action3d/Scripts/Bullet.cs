@@ -11,6 +11,7 @@ namespace Game
 		[SerializeField] float speed;
 		[SerializeField] GameObject hitViewPrefab;
 		[SerializeField] TrailRenderer trailRenderer;
+		[SerializeField] LayerMask layerMask;
 	 
 		float stopTime;   
 		bool skipFrame;
@@ -34,7 +35,7 @@ namespace Game
 			}
 
 			float distance = Time.deltaTime * speed;
-			HitInfo hit = HitUtils.RayCast(transform.position, dir, distance);
+			HitInfo hit = HitUtils.RayCast(transform.position, dir, layerMask, distance);
 			
 			transform.position = Vector3.MoveTowards(transform.position, hit.point, distance);
 

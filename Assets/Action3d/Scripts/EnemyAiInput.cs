@@ -2,6 +2,7 @@
 using GamePackages.Core.Validation;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 namespace Game
 {
@@ -33,8 +34,10 @@ namespace Game
 		[Header("Move")]
 		[SerializeField, IsntNull] NavMeshAgent navMeshAgent;
 		[SerializeField] bool isMove;
+		[SerializeField] float wayPintAccuracy= 0.2f;
 		NavMeshPath path;
 		int actualPathCornerIndex;
+		UnityAction navigationCallback;
 
 
 		void Start()
@@ -183,32 +186,43 @@ namespace Game
 			}
 
 		}
+
+		[SerializeField] bool isDebug;
 		
 		void AiMove()
 		{  
 			Vector3 pathPoint = path.corners[actualPathCornerIndex];
-			//Vector3 pathDir = pathPoint - path.corners[actualPathCornerIndex - 1];
 			Vector3 toTarget = pathPoint - transform.position;
-			if (isMove && Vector3.Distance(navMeshPipette.position, pathPoint) < 0.1f)
+			toTarget.y = 0;
+			lastInput = toTarget.normalized;
+			motor.MoveDirInput(lastInput);
+
+			Vector3 delta = pathPoint - navMeshPipette.position;
+			Vector3 flatDelta = new Vector3(delta.x, 0, delta.z);
+			float flatDistance =  flatDelta.magnitude;
+			float heightDistance = Mathf.Abs(delta.y);
+			 
+			if (isMove && (flatDistance < wayPintAccuracy) && (heightDistance < 0.6f))
 			{
 				actualPathCornerIndex++;
 
 				if (actualPathCornerIndex >= path.corners.Length)
+				{ 
 					actualPathCornerIndex = -1;
-			}
-
-			toTarget.y = 0;
-			lastInput = toTarget.normalized;
-			motor.MoveDirInput(lastInput);
+					ActionWrapper.ClearAndInvoke(ref navigationCallback);
+				}
+			} 
 		}
 		
-		public void SetDestination(Vector3 point)
+		public void SetDestination(Vector3 point, UnityAction callBack = null)
 		{
 			navMeshAgent.Warp(transform.position);
-			bool success = navMeshAgent.CalculatePath(point, path);
-			//bool success = NavMesh.CalculatePath(transform.position, point, NavMesh.AllAreas, path);
+			navigationCallback = callBack;
+			
+			NavMesh.SamplePosition(point, out var hit, 10, NavMesh.AllAreas);
+			bool success = navMeshAgent.CalculatePath(hit.position, path);
 
-			actualPathCornerIndex = success ? 1 : -1;
+			actualPathCornerIndex = success ? 1 : -1; 
 		}
 	}
 }
