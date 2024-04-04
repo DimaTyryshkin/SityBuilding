@@ -39,7 +39,7 @@ namespace GlobalStrategy.CoreLogic
  
 		void TryRequestProduct(City city, int productIndex, bool priority = false)
 		{
-			float needAmount = 100 - city.balance[productIndex];
+			float needAmount = city.State.GetRequest(productIndex);
 			//Debug.Log($"[d][log] 1 {city.name} needAmount={needAmount} {(FactoryCity.FactoryType)productIndex}");
 			if (needAmount >= GroundRoad.packageSize)
 			{

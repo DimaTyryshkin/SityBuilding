@@ -22,7 +22,7 @@ namespace GlobalStrategy.CoreLogic
 			if(!isLive)
 				return;
 			
-			if (city.balance[(int)factoryType] >= 100)
+			if (city.balance[(int)factoryType] >= City.normalCapacityValue)
 				return;
 
 			var productionFrameCost = productionCost * Time.deltaTime;
@@ -38,6 +38,11 @@ namespace GlobalStrategy.CoreLogic
 			return factoryType == FactoryType.None ? 
 				new Products(0, 0, 0, 0) : 
 				new Products((int)factoryType, productivity);
+		}
+
+		public override float GetRequest(int productIndex)
+		{
+			return City.normalCapacityValue - city.balance[productIndex];
 		}
 
 		public override Products GetSpending()

@@ -1,11 +1,13 @@
-using System; 
+using System;
+using GamePackages.Core;
+using GamePackages.InputSystem;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 
 namespace GlobalStrategy.CoreLogic
 {
-	public class City : MonoBehaviour
+	public class City : MonoBehaviour, IClickHandler
 	{
 		public int id;
 		public int country;
@@ -18,18 +20,19 @@ namespace GlobalStrategy.CoreLogic
 		public CityState State
 		{
 			get => state;
-			private set
+			set
 			{
 				Assert.IsNotNull(state);
 				if (state)
-					Destroy(state);
+					Destroy(state.gameObject);
 
 				state = value;
-				state.StartState(this);
+				state.SetCity(this);
 			}
 		}
 
 		public static readonly float maxCapacityValue = 200; 
+		public static readonly float normalCapacityValue = 100; 
 		public event UnityAction Updated;
  
 		
@@ -41,9 +44,16 @@ namespace GlobalStrategy.CoreLogic
 		
 		public void Init()
 		{ 
-			state.StartState(this);
+			state.SetCity(this);
 		}
-		
+
+		public T CreateNewStateFromPrefab<T>(T statePrefab) where T : CityState
+		{
+			T newState = transform.InstantiateAsChild(statePrefab);
+			State = newState;
+			return newState;
+		}
+
 		public void Add(Products p)
 		{
 			balance += p;
@@ -85,6 +95,11 @@ namespace GlobalStrategy.CoreLogic
 			if (c.materials < 0) return false;
 
 			return true;
+		}
+
+		public void Click(EventData eventData)
+		{
+			
 		}
 	}
 }

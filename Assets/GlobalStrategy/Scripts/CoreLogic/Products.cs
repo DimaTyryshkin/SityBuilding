@@ -21,9 +21,10 @@ namespace GlobalStrategy.CoreLogic
 		public float materials;
 		
 		public int ProductIndex { get; set; }
+		public float ComponentsSum => fuel + shells + food + materials;
 
 
-		public void Clamp(float min, float max)
+		public void Clamp(float min, float max = float.MaxValue)
 		{
 			fuel = Mathf.Clamp(fuel, min, max);
 			shells = Mathf.Clamp(shells, min, max);
@@ -76,13 +77,47 @@ namespace GlobalStrategy.CoreLogic
 			ProductIndex = productIndex; 
 			Add(productIndex, value);
 		}
- 
+
+		public static Products Min(Products a, Products b)
+		{
+			return new Products(
+				Mathf.Min(a.fuel, b.fuel), 
+				Mathf.Min(a.shells, b.shells), 
+				Mathf.Min(a.food, b.food), 
+				Mathf.Min(a.materials, b.materials));
+		}
+
+		public static Products Max(Products a, Products b)
+		{
+			return new Products(
+				Mathf.Max(a.fuel, b.fuel),
+				Mathf.Max(a.shells, b.shells),
+				Mathf.Max(a.food, b.food),
+				Mathf.Max(a.materials, b.materials));
+		}
+
 		public static bool operator >(Products a, Products b)
 			=> 
 				a.fuel > b.fuel &&
 				a.shells > b.shells &&
 				a.food > b.food &&
 				a.materials > b.materials ;
+		
+		public static bool operator >=(Products a, Products b)
+			=> 
+				a.fuel >= b.fuel &&
+				a.shells >= b.shells &&
+				a.food >= b.food &&
+				a.materials >= b.materials ;
+
+		public static bool operator ==(Products a, Products b)
+			=>
+				Mathf.Approximately(a.fuel, b.fuel) &&
+				Mathf.Approximately(a.shells, b.shells) &&
+				Mathf.Approximately(a.food, b.food) &&
+				Mathf.Approximately(a.materials, b.materials);
+
+		public static bool operator !=(Products a, Products b) => !(a == b);
 
 		public static bool operator <(Products a, Products b)
 			=> 
@@ -90,6 +125,15 @@ namespace GlobalStrategy.CoreLogic
 				a.shells < b.shells &&
 				a.food < b.food &&
 				a.materials < b.materials ;
+		
+		public static bool operator <=(Products a, Products b)
+			=> 
+				a.fuel <= b.fuel &&
+				a.shells <= b.shells &&
+				a.food <= b.food &&
+				a.materials <= b.materials ;
+
+	
 
 		public static Products operator +(Products a, Products b)
 			=> new Products(
@@ -111,6 +155,8 @@ namespace GlobalStrategy.CoreLogic
 				a.shells * b,
 				a.food * b,
 				a.materials * b);
+		
+	 
 
 		public override string ToString()
 		{
