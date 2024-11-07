@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aef13a34e1b6437ca8eb05e88e6babe7, type: 3}
+  m_Name: GameOfLive
+  m_EditorClassIdentifier: Assembly-CSharp:CellularAutomaton:Rules
+  colors:
+  - type: 1
+    color: {r: 0, g: 0, b: 0, a: 1}
+  - type: 4
+    color: {r: 0.14827116, g: 0.8396226, b: 0.14653791, a: 1}
+  groups:
+  - isOpen: 1
+    cellType: 1
+    name: 
+    rules:
+    - rotation: 1
+      repeat: 0
+      mainVariant:
+        mask: 000200000000000000
+        result: 000200000100000000
+    - rotation: 0
+      repeat: 0
+      mainVariant:
+        mask: 000000000002000100
+        result: 000000010000000000
+    - rotation: 1
+      repeat: 1
+      mainVariant:
+        mask: 000000000000000001
+        result: 000000000000000002
+  - isOpen: 1
+    cellType: 2
+    name: 
+    rules:
+    - rotation: 1
+      repeat: 1
+      mainVariant:
+        mask: 000000000100000200
+        result: 000200000100020000
+    - rotation: 0
+      repeat: 0
+      mainVariant:
+        mask: 000000000200000100
+        result: 000000000100000000

@@ -7,6 +7,8 @@ namespace GlobalStrategy.CoreLogic
 	{
 		protected City city;
 
+		public City City => city;
+		
 		public void SetCity(City city)
 		{
 			Assert.IsNotNull(city);

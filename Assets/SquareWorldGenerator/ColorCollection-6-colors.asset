@@ -1,0 +1,105 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5efa85452cc497caa64bb848a1d5226, type: 3}
+  m_Name: ColorCollection-6-colors
+  m_EditorClassIdentifier: 
+  rules:
+  - color: {r: 0, g: 0, b: 0, a: 1}
+    nearRule: 0
+    type1: 0
+    type2: 0
+    hunting: 
+    moveChance: []
+  - color: {r: 0.8, g: 0.8, b: 0.8, a: 1}
+    nearRule: 1
+    type1: 4
+    type2: 5
+    hunting: 000000000500000002000000
+    moveChance:
+    - 0.22309712
+    - 0.097112864
+    - 0.002624672
+    - 0.026246719
+    - 0.097112864
+    - 0.24671917
+    - 0.22834645
+    - 0.07874016
+  - color: {r: 0.8, g: 0.405817, b: 0.16078429, a: 1}
+    nearRule: 1
+    type1: 1
+    type2: 5
+    hunting: 000000000100000002000000
+    moveChance:
+    - 0.12776412
+    - 0.1941032
+    - 0.18427518
+    - 0.00982801
+    - 0.12530713
+    - 0.2039312
+    - 0.022113021
+    - 0.13267814
+  - color: {r: 0.19274512, g: 0.8, b: 0.16078429, a: 1}
+    nearRule: 1
+    type1: 5
+    type2: 6
+    hunting: 000000000400000001000000
+    moveChance:
+    - 0
+    - 0.2749004
+    - 0.13545817
+    - 0.2549801
+    - 0.2310757
+    - 0.03187251
+    - 0.07171315
+    - 0
+  - color: {r: 0.8, g: 0.7573857, b: 0.16078429, a: 1}
+    nearRule: 1
+    type1: 5
+    type2: 4
+    hunting: 000000000300000006000000
+    moveChance:
+    - 0.19502075
+    - 0.114107884
+    - 0.1307054
+    - 0.099585064
+    - 0.10788382
+    - 0.004149378
+    - 0.17012449
+    - 0.17842324
+  - color: {r: 0.16078429, g: 0.7680393, b: 0.8, a: 1}
+    nearRule: 1
+    type1: 1
+    type2: 5
+    hunting: 000000000600000002000000
+    moveChance:
+    - 0.037593983
+    - 0.012531328
+    - 0.015037594
+    - 0.20802005
+    - 0.20300752
+    - 0.20050125
+    - 0.10526316
+    - 0.21804512
+  - color: {r: 0.16078429, g: 0.16078429, b: 0.8, a: 1}
+    nearRule: 1
+    type1: 5
+    type2: 4
+    hunting: 000000000600000004000000
+    moveChance:
+    - 0.035598706
+    - 0.30097088
+    - 0.03883495
+    - 0.21035598
+    - 0.14563107
+    - 0.01618123
+    - 0.20064725
+    - 0.051779937

@@ -1,0 +1,97 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aef13a34e1b6437ca8eb05e88e6babe7, type: 3}
+  m_Name: Rules random
+  m_EditorClassIdentifier: Assembly-CSharp:CellularAutomaton:Rules
+  colors:
+  - type: 1
+    color: {r: 0, g: 0, b: 0, a: 1}
+  - type: 2
+    color: {r: 0.8, g: 0.16, b: 0.16, a: 1}
+  - type: 4
+    color: {r: 0.16078429, g: 0.8, b: 0.16078429, a: 1}
+  - type: 8
+    color: {r: 0.16078429, g: 0.21405222, b: 0.8, a: 1}
+  - type: 16
+    color: {r: 0.7931578, g: 0.8, b: 0.16078429, a: 1}
+  groups:
+  - isOpen: 1
+    cellType: 2
+    name: dsf
+    rules:
+    - rotation: 0
+      repeat: 1
+      mainVariant:
+        mask: 000000000000000010
+        result: 000000000804000400
+    - rotation: 1
+      repeat: 0
+      mainVariant:
+        mask: 000000080000000200
+        result: 020000000000000204
+  - isOpen: 1
+    cellType: 4
+    name: dsf
+    rules:
+    - rotation: 0
+      repeat: 0
+      mainVariant:
+        mask: 041000000000000000
+        result: 000000080000000000
+    - rotation: 0
+      repeat: 0
+      mainVariant:
+        mask: 100008000000000000
+        result: 000001000001000000
+    - rotation: 0
+      repeat: 0
+      mainVariant:
+        mask: 080000000100000004
+        result: 000000010000000000
+  - isOpen: 1
+    cellType: 8
+    name: dsf
+    rules:
+    - rotation: 0
+      repeat: 0
+      mainVariant:
+        mask: 000000000010000100
+        result: 040000000000020000
+    - rotation: 0
+      repeat: 0
+      mainVariant:
+        mask: 000204000200000000
+        result: 000000000000080000
+    - rotation: 1
+      repeat: 0
+      mainVariant:
+        mask: 000000000010000000
+        result: 000000000000000804
+  - isOpen: 1
+    cellType: 16
+    name: dsf
+    rules:
+    - rotation: 0
+      repeat: 0
+      mainVariant:
+        mask: 000000000000000010
+        result: 000000000000000000
+    - rotation: 0
+      repeat: 0
+      mainVariant:
+        mask: 080000040001000000
+        result: 000001000000040000
+    - rotation: 0
+      repeat: 0
+      mainVariant:
+        mask: 000010000000100000
+        result: 000000000400000004

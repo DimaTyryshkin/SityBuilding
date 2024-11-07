@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aef13a34e1b6437ca8eb05e88e6babe7, type: 3}
+  m_Name: Rules
+  m_EditorClassIdentifier: Assembly-CSharp:CellularAutomaton:Rules
+  colors:
+  - type: 1
+    color: {r: 0, g: 0, b: 0, a: 1}
+  - type: 2
+    color: {r: 0.8, g: 0.16, b: 0.16, a: 1}
+  - type: 4
+    color: {r: 0.16078429, g: 0.8, b: 0.16078429, a: 1}
+  - type: 8
+    color: {r: 0.16078429, g: 0.21405222, b: 0.8, a: 1}
+  groups:
+  - isOpen: 0
+    cellType: 2
+    name: dsf
+    rules:
+    - rotation: 1
+      repeat: 1
+      mainVariant:
+        mask: 000000000204000000
+        result: 000000000202000000
+    - rotation: 1
+      repeat: 1
+      mainVariant:
+        mask: 000000000201000000
+        result: 000000000202000000
+  - isOpen: 0
+    cellType: 4
+    name: dsf
+    rules:
+    - rotation: 1
+      repeat: 1
+      mainVariant:
+        mask: 000000000408000000
+        result: 000000000404000000
+    - rotation: 1
+      repeat: 1
+      mainVariant:
+        mask: 000000000401000000
+        result: 000000000404000000
+  - isOpen: 0
+    cellType: 8
+    name: dsf
+    rules:
+    - rotation: 1
+      repeat: 1
+      mainVariant:
+        mask: 000000000802000000
+        result: 000000000808000000
+    - rotation: 1
+      repeat: 1
+      mainVariant:
+        mask: 000000000801000000
+        result: 000000000808000000

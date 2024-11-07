@@ -941,6 +941,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5503070469087417609}
+  - component: {fileID: 7479624221855982191}
   m_Layer: 0
   m_Name: bars
   m_TagString: Untagged
@@ -967,6 +968,18 @@ Transform:
   m_Father: {fileID: 5503070468874999222}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!210 &7479624221855982191
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5503070469087417608}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
 --- !u!1 &5503070469374294767
 GameObject:
   m_ObjectHideFlags: 0
