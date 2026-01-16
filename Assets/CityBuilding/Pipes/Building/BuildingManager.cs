@@ -1,91 +1,86 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Game.GameGui;
-using GamePackages.Core;
-using GamePackages.Core.Validation;
+﻿using GamePackages.Core.Validation;
 using GamePackages.InputSystem;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 
 namespace Game.Building
 {
-	public class BuildingManager : MonoBehaviour
-	{
-		[SerializeField, IsntNull] MapBuilder mapBuilder;
-		[SerializeField, IsntNull] BuildingBrushPanel buildingBrushPanel;
-		[SerializeField, IsntNull] Camera thisCamera;
-		[SerializeField, IsntNull] GameGrid grid;
-		[SerializeField, IsntNull] GameObject cellMarkerAvailable; 
-		[SerializeField, IsntNull] GameObject cellMarkerLock; 
-		[SerializeField, IsntNull] GuiHit guiHit;
+    public class BuildingManager : MonoBehaviour
+    {
+        [SerializeField, IsntNull] MapBuilder mapBuilder;
+        [SerializeField, IsntNull] BuildingBrushPanel buildingBrushPanel;
+        [SerializeField, IsntNull] Camera thisCamera;
+        [SerializeField, IsntNull] GameGrid grid;
+        [SerializeField, IsntNull] GameObject cellMarkerAvailable;
+        [SerializeField, IsntNull] GameObject cellMarkerLock;
+        [SerializeField, IsntNull] GuiHit guiHit;
 
-		[Header("Building info")] 
-		[SerializeField, IsntNull] PipeBuildingInfo pipeBuildingInfo;
-		[SerializeField, IsntNull] CrossBuildingInfo crossBuildingInfo;
-		[SerializeField, IsntNull] MinerBuildingInfo dirtWaterMinerBuildingInfo;
-		[SerializeField, IsntNull] MinerBuildingInfo coalMinerBuildingInfo;
-		[SerializeField, IsntNull] ConverterBuildingInfo converterBuildingInfo;
-		
-		PointBrush staticObjectBrush;
+        [Header("Building info")]
+        [SerializeField, IsntNull] PipeBuildingInfo pipeBuildingInfo;
+        [SerializeField, IsntNull] CrossBuildingInfo crossBuildingInfo;
+        [SerializeField, IsntNull] MinerBuildingInfo dirtWaterMinerBuildingInfo;
+        [SerializeField, IsntNull] MinerBuildingInfo coalMinerBuildingInfo;
+        [SerializeField, IsntNull] ConverterBuildingInfo converterBuildingInfo;
 
-		PipeBrush pipeBrush;
-		List<PointBrush> staticBrushes;
-		BuildingBrush activeBrush;
+        PointBrush staticObjectBrush;
 
-
-		public void Init()
-		{
-			BrushBuilder brushBuilder = new BrushBuilder(
-				thisCamera,
-				mapBuilder,
-				grid,
-				cellMarkerAvailable,
-				cellMarkerLock,
-				guiHit
-			);
-
-			pipeBrush = new PipeBrush(pipeBuildingInfo, crossBuildingInfo, brushBuilder);
-
-			activeBrush = null;
-			buildingBrushPanel.SelectPipe += () => activeBrush = pipeBrush;
-
-			staticBrushes = new List<PointBrush>();
+        PipeBrush pipeBrush;
+        List<PointBrush> staticBrushes;
+        BuildingBrush activeBrush;
 
 
-			AddProduction(
-				brushBuilder,
-				dirtWaterMinerBuildingInfo,
-				"Water Pump",
-				cell => dirtWaterMinerBuildingInfo.InstantiateNew(cell, mapBuilder));
+        public void Init()
+        {
+            BrushBuilder brushBuilder = new BrushBuilder(
+                thisCamera,
+                mapBuilder,
+                grid,
+                cellMarkerAvailable,
+                cellMarkerLock,
+                guiHit
+            );
 
-			AddProduction(
-				brushBuilder,
-				coalMinerBuildingInfo,
-				"Coal Miner",
-				cell => coalMinerBuildingInfo.InstantiateNew(cell, mapBuilder));
+            pipeBrush = new PipeBrush(pipeBuildingInfo, crossBuildingInfo, brushBuilder);
+
+            activeBrush = null;
+            buildingBrushPanel.SelectPipe += () => activeBrush = pipeBrush;
+
+            staticBrushes = new List<PointBrush>();
 
 
-			AddProduction(
-				brushBuilder,
-				converterBuildingInfo,
-				"Water Cleaner",
-				cell => converterBuildingInfo.InstantiateNew(cell, mapBuilder));
-		}
+            AddProduction(
+                brushBuilder,
+                dirtWaterMinerBuildingInfo,
+                "Water Pump",
+                cell => dirtWaterMinerBuildingInfo.InstantiateNew(cell, mapBuilder));
 
-		void AddProduction(BrushBuilder brushBuilder, BuildingInfoBase buildingInfo, string buttonLabel, UnityAction<Vector2Int> buildAction)
-		{
-			PointBrush newBrush = new PointBrush(pipeBrush, brushBuilder, buildingInfo.GetCellsMask());
-			staticBrushes.Add(newBrush);
-			buildingBrushPanel.AddProductionButton(buttonLabel, () => activeBrush = newBrush);
-			newBrush.Build += buildAction;
-		}
+            AddProduction(
+                brushBuilder,
+                coalMinerBuildingInfo,
+                "Coal Miner",
+                cell => coalMinerBuildingInfo.InstantiateNew(cell, mapBuilder));
 
-		void Update()
-		{
-			  activeBrush?.LateUpdate();
-		} 
-	}
-	
+
+            AddProduction(
+                brushBuilder,
+                converterBuildingInfo,
+                "Water Cleaner",
+                cell => converterBuildingInfo.InstantiateNew(cell, mapBuilder));
+        }
+
+        void AddProduction(BrushBuilder brushBuilder, BuildingInfoBase buildingInfo, string buttonLabel, UnityAction<Vector2Int> buildAction)
+        {
+            PointBrush newBrush = new PointBrush(pipeBrush, brushBuilder, buildingInfo.GetCellsMask());
+            staticBrushes.Add(newBrush);
+            buildingBrushPanel.AddProductionButton(buttonLabel, () => activeBrush = newBrush);
+            newBrush.Build += buildAction;
+        }
+
+        void Update()
+        {
+            activeBrush?.LateUpdate();
+        }
+    }
+
 }

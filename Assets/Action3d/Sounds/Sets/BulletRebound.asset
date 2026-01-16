@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ab0ebc2e6ba98941b26bb6f14b99e14, type: 3}
+  m_Name: BulletRebound
+  m_EditorClassIdentifier: 
+  isAdded: 0
+  isDone: 0
+  isBug: 0
+  info: 
+  soundGroup: BulletRebound
+  audioMixerGroup: {fileID: 3511263098701129396, guid: 216b6da37d2c2d148a01d8c781c55643, type: 2}
+  dontDestroyOnload: 0
+  clips:
+  - {fileID: 11400000, guid: 569f71e5a4d6f784987d2abb979189f3, type: 2}

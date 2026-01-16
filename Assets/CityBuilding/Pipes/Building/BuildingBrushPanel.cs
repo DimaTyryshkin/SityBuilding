@@ -1,11 +1,10 @@
-using Game.Building;
 using GamePackages.Core;
 using GamePackages.Core.Validation;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace Game.GameGui
+namespace Game.Building
 {
     public class BuildingBrushPanel : MonoBehaviour
     {
@@ -18,13 +17,13 @@ namespace Game.GameGui
         [SerializeField, IsntNull] Toggle togglePrefab;
 
         public event UnityAction SelectPipe;
-        
+
 
         public void Init()
         {
             pipeToggle.onValueChanged.AddListener(OnClickPipe);
-            productionToggle.onValueChanged.AddListener(OnClickProduction); 
-            productionPanel.SetActive(false);  
+            productionToggle.onValueChanged.AddListener(OnClickProduction);
+            productionPanel.SetActive(false);
             productionPanel.transform.DestroyChildren();
         }
 
@@ -36,7 +35,7 @@ namespace Game.GameGui
             toggle.onValueChanged.AddListener(isOn => onSelect.Invoke());
 
             toggle.GetComponentInChildren<Text>().text = text;
-        } 
+        }
 
         void OnClickPipe(bool isOn)
         {
