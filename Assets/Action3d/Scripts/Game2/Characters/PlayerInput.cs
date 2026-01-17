@@ -1,4 +1,5 @@
 ﻿using GamePackages.Core.Validation;
+using System.Collections;
 using UnityEngine;
 
 namespace Game
@@ -8,32 +9,38 @@ namespace Game
         [SerializeField, IsntNull] float rotationSensitivity;
         [SerializeField, IsntNull] CharacterMotor characterMove;
 
-        int rotateFrameCounter;
+        bool isEnableInput;
 
         protected virtual void Start()
         {
-            rotateFrameCounter = 3;
-            Cursor.lockState = CursorLockMode.Locked; //TODO 
+            isEnableInput = false;
+            StartCoroutine(WaitAndEnable());
+        }
+
+        IEnumerator WaitAndEnable()
+        {
+            yield return null;
+            yield return null;
+            yield return null;
+            yield return null;
+            isEnableInput = true;
+            Cursor.lockState = CursorLockMode.Locked;
         }
 
         void RotateAndMove()
         {
             // Rotate
             {
-                if (rotateFrameCounter < 0)
-                {
-                    float horizontalInput = Input.GetAxis("Mouse X") * Time.deltaTime * rotationSensitivity;
-                    float verticalInput = -Input.GetAxis("Mouse Y") * Time.deltaTime * rotationSensitivity;
 
-                    //viewDir = Quaternion.Euler(new Vector3(0, xInput, 0)) * viewDir;
-                    //viewDir = Quaternion.AngleAxis(yInput, transform.right) * viewDir;
-                    characterMove.RotateHorizontal(horizontalInput);
-                    characterMove.RotateVertical(verticalInput);
-                }
-                else
-                {
-                    rotateFrameCounter--;
-                }
+                float horizontalInput = Input.GetAxis("Mouse X") * Time.deltaTime * rotationSensitivity;
+                float verticalInput = -Input.GetAxis("Mouse Y") * Time.deltaTime * rotationSensitivity;
+
+                //viewDir = Quaternion.Euler(new Vector3(0, xInput, 0)) * viewDir;
+                //viewDir = Quaternion.AngleAxis(yInput, transform.right) * viewDir;
+                characterMove.RotateHorizontal(horizontalInput);
+                characterMove.RotateVertical(verticalInput);
+
+
             }
 
             //Move
@@ -48,8 +55,17 @@ namespace Game
         }
         void Update()
         {
-            RotateAndMove();
-            UpdteInternal();
+            if (isEnableInput)
+            {
+                RotateAndMove();
+                UpdteInternal();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                isEnableInput = !isEnableInput;
+                Cursor.lockState = isEnableInput ? CursorLockMode.Locked : CursorLockMode.None; //TODO 
+            }
         }
 
         protected abstract void UpdteInternal();

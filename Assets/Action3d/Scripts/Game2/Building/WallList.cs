@@ -9,7 +9,7 @@ namespace Game2.Building
         {
             return new WallJson()
             {
-                cell = item.Cell,
+                cell = item.actualCell,
                 roration = 0
             };
         }

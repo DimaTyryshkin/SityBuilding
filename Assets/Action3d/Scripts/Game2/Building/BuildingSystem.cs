@@ -23,13 +23,17 @@ namespace Game2.Building
 
         public void Init()
         {
-            wallList.Init();
-            buildingBrushPanel.Init();
-
-            gridContent.Init(new BuildingListBase[]
+            BuildingListBase[] allBuildingLists = new BuildingListBase[]
             {
                 wallList,
-            });
+            };
+
+            foreach (BuildingListBase buildingList in allBuildingLists)
+                buildingList.Init();
+
+            buildingBrushPanel.Init();
+
+            gridContent.Init(allBuildingLists);
 
             BrushInject brushBuilder = new BrushInject(
                 cameraForBuilding,
@@ -52,7 +56,6 @@ namespace Game2.Building
                 "Wall",
                 cell =>
                 {
-                    Debug.Log("BuildAction");
                     wallList.InstantiateAsNew(cell, gridContent);
                 }));
 

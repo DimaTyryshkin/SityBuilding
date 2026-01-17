@@ -24,7 +24,7 @@ namespace Game2.Building
         [SerializeField, IsntNull] TextAsset json1;
         [SerializeField, IsntNull] TextAsset jsonTemp;
 
-        BuildingListBase[] buildingsInfo;
+        BuildingListBase[] buildingsLists;
         MapJson mapJson;
         int actualId;
 
@@ -40,11 +40,11 @@ namespace Game2.Building
             return ++actualId;
         }
 
-        public void Init(BuildingListBase[] buildingsInfo)
+        public void Init(BuildingListBase[] buildingsLists)
         {
-            AssertWrapper.IsAllNotNull(buildingsInfo);
+            AssertWrapper.IsAllNotNull(buildingsLists);
 
-            this.buildingsInfo = buildingsInfo;
+            this.buildingsLists = buildingsLists;
             mapJson = new MapJson();
         }
 
@@ -52,7 +52,7 @@ namespace Game2.Building
         {
             transform.DestroyChildren();
 
-            foreach (var building in buildingsInfo)
+            foreach (var building in buildingsLists)
             {
                 building.ParseJson(mapJson, this);
             }
@@ -68,8 +68,8 @@ namespace Game2.Building
         {
             result.buildings.Clear();
 
-            foreach (BuildingListBase info in buildingsInfo)
-                info.CastNonAllocate(cell, ref result);
+            foreach (BuildingListBase list in buildingsLists)
+                list.CastNonAllocate(cell, ref result);
         }
 
         void LoadFromJson(TextAsset jsonFile)
@@ -88,7 +88,7 @@ namespace Game2.Building
             this.mapJson = new MapJson();
 
             actualId = 0;
-            foreach (var info in buildingsInfo)
+            foreach (var info in buildingsLists)
                 info.PrintToJson(this.mapJson, this, ref actualId);
 
             string mapJson = JsonUtility.ToJson(this.mapJson, true);

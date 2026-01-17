@@ -21,15 +21,17 @@ namespace Game2.Building
         };
 
 
-        public Vector3Int WorldPointToCell(Vector3 worldPoint)
+        public static Vector3Int WorldPointToCell(Vector3 worldPoint) => WorldPointToCell(worldPoint.x, worldPoint.y, worldPoint.z);
+
+        public static Vector3Int WorldPointToCell(float x, float y, float z)
         {
-            int x = (int)Mathf.Floor(worldPoint.x);
-            int y = (int)Mathf.Floor(worldPoint.y);
-            int z = (int)Mathf.Floor(worldPoint.z);
-            return new Vector3Int(x, y, z);
+            int cellX = (int)Mathf.Floor(x);
+            int cellY = (int)Mathf.Floor(y);
+            int cellZ = (int)Mathf.Floor(z);
+            return new Vector3Int(cellX, cellY, cellZ);
         }
 
-        public Vector3 CellToWorldPoint(Vector3 cell)
+        public static Vector3 CellToWorldPoint(Vector3 cell)
         {
             float x = cell.x;
             float y = cell.y;

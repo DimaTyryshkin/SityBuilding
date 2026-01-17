@@ -14,26 +14,13 @@ namespace Game2.Building
 
     public abstract class BuildingListBase : MonoBehaviour
     {
-        [SerializeField] Vector3Int[] cellsMask;
-
         public abstract BuildingBase Prefab { get; }
 
-        public Vector3Int[] GetCellsMask()
+        public virtual void Init()
         {
-            return cellsMask;
+            //Prefab.Init();
         }
 
-        public List<Vector3Int> CopyCellsMask(Vector3Int offset)
-        {
-            List<Vector3Int> newMask = new List<Vector3Int>(cellsMask.Length);
-
-            for (int i = 0; i < cellsMask.Length; i++)
-                newMask.Add(cellsMask[i] + offset);
-
-            return newMask;
-        }
-
-        public abstract void Init();
         public abstract void ParseJson(MapJson mapJson, GridContent mapBuilder);
         public abstract void CastNonAllocate(Vector3Int cell, ref CellCast result);
         public abstract void PrintToJson(MapJson mapJson, GridContent mapBuilder, ref int actualId);
@@ -52,6 +39,7 @@ namespace Game2.Building
 
         public sealed override void Init()
         {
+            base.Init();
             allBuildings = new List<T>();
             idToItem = new Dictionary<int, T>();
         }
@@ -89,7 +77,7 @@ namespace Game2.Building
             allBuildings.ToStringMultilineAndLog($"CastNonAllocate {gameObject.name}", x => x.name);
             foreach (T item in allBuildings)
             {
-                foreach (Vector3Int c in item.cells)
+                foreach (Vector3Int c in item.actualCells)
                 {
                     if (c == cell)
                     {
@@ -130,15 +118,12 @@ namespace Game2.Building
 
         private T SpawnPrefab(Vector3Int cell, GridContent mapBuilder)
         {
-            T newItem = mapBuilder.MapRoot.InstantiateAsChild(itemPrefab);
-            allBuildings.Add(newItem);
-
-            newItem.gameObject.transform.position = mapBuilder.Grid.CellToWorldPoint(cell);
-            newItem.Cell = cell;
-            newItem.cells = CopyCellsMask(cell);
-
-
-            return newItem;
+            T newBuilding = mapBuilder.MapRoot.InstantiateAsChild(itemPrefab, localScaleToOne: false);
+            newBuilding.gameObject.SetActive(true);
+            allBuildings.Add(newBuilding);
+            newBuilding.Init();
+            newBuilding.MoveToCell(cell);
+            return newBuilding;
         }
 
         protected abstract void InitAfterInstFormSave(T building, Vector3Int cell, T2 json, GridContent mapBuilder);

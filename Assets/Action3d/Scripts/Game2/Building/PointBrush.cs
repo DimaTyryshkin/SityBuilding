@@ -1,4 +1,5 @@
-﻿using GamePackages.InputSystem;
+﻿using GamePackages.Core;
+using GamePackages.InputSystem;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
@@ -34,12 +35,10 @@ namespace Game2.Building
     public class PointBrush : BuildingBrush
     {
         readonly BrushInject inject;
-        readonly Vector3Int[] cellsMask;
-        readonly Vector3Int[] cells;
         readonly RaycastHit[] raycastHits;
         readonly BuildingListBase buildingList;
         CellCast cast;
-        Transform buildingFantom;
+        BuildingBase buildingFantom;
 
 
         public event UnityAction<Vector3Int> Build;
@@ -51,9 +50,7 @@ namespace Game2.Building
 
             this.buildingList = buildingList;
             this.inject = inject;
-            cellsMask = buildingList.GetCellsMask();
-            cells = new Vector3Int[cellsMask.Length];
-            raycastHits = new RaycastHit[1];
+            raycastHits = new RaycastHit[10];
             cast = new CellCast();
         }
 
@@ -62,26 +59,20 @@ namespace Game2.Building
             if (inject.guiHit.IsGuiUnderPointer)
                 return;
 
+            Assert.IsTrue(buildingFantom);
+
             Ray ray = new Ray(inject.thisCamera.transform.position, inject.thisCamera.transform.forward);
             int count = Physics.RaycastNonAlloc(ray, raycastHits, 10);
-
             buildingFantom.gameObject.SetActive(count > 0);
             if (count == 0)
                 return;
 
-            //Vector3 worldPoint = data.thisCamera.ScreenPointToWorldPointOnPlane(Input.mousePosition, Plaine.XZ);
-            Vector3Int cell = inject.grid.WorldPointToCell(raycastHits[0].point);
-            for (int i = 0; i < cells.Length; i++)
-                cells[i] = cellsMask[i] + cell;
-
-            Vector3 pos = inject.grid.CellToWorldPoint(cell);
-            //data.cellMarkerAvailable.transform.position = pos;
-            //data.cellMarkerLock.transform.position = pos;
-
-
+            Vector3 p = raycastHits.MinItem(static x => x.distance, count).point;
+            Vector3Int cell = GameGrid.WorldPointToCell(p.x, p.y + 0.5f, p.z);
+            buildingFantom.MoveToCell(cell);
 
             bool isFree = true;
-            foreach (var c in cells)
+            foreach (Vector3Int c in buildingFantom.actualCells)
             {
                 inject.gridContent.CastNonAllocate(c, ref cast);
                 if (!cast.IsFree)
@@ -91,14 +82,7 @@ namespace Game2.Building
                 }
             }
 
-
-            buildingFantom.position = inject.grid.CellToWorldPoint(cell);
-            var allRenderer = buildingFantom.GetComponentsInChildren<MeshRenderer>();
-            foreach (var renderer in allRenderer)
-                renderer.material.color = isFree ? Color.green : Color.red;
-
-            //data.cellMarkerAvailable.SetActive(isFree);
-            //data.cellMarkerLock.SetActive(!isFree);
+            buildingFantom.SetFantomColor(isFree ? Color.green : Color.red);
 
             if (isFree)
             {
@@ -108,24 +92,25 @@ namespace Game2.Building
                 }
             }
 
-
-            if (Input.GetMouseButton(1))
-                Remove(cells);
+            //if (Input.GetMouseButton(1))
+            //    Remove(cells);
         }
 
         public override void OnEnableBrush()
         {
-            GameObject go = Object.Instantiate(buildingList.Prefab.gameObject);
-            buildingFantom = go.transform;
-
-            foreach (var c in go.GetComponentsInChildren<Collider>())
-                Object.DestroyImmediate(c);
+            buildingFantom = Object.Instantiate(buildingList.Prefab);
+            buildingFantom.gameObject.SetActive(true);
+            buildingFantom.Init();
+            buildingFantom.SetFantomMode();
         }
 
         public override void OnDisableBrush()
         {
             if (buildingFantom)
-                Object.DestroyImmediate(buildingFantom);
+            {
+                Object.Destroy(buildingFantom);
+                buildingFantom = null;
+            }
         }
 
         void Remove(Vector3Int[] cells)

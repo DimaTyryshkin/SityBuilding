@@ -19,6 +19,8 @@ namespace Game
             if (Input.GetKeyDown(KeyCode.R))
                 gun.ReloadInput();
 
+
+
             //if (Input.GetMouseButton(0))
             //    gun.ShotInput();
         }
