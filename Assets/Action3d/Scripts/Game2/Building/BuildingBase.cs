@@ -1,5 +1,8 @@
 ﻿using GamePackages.Core;
+using NaughtyAttributes;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -7,10 +10,10 @@ namespace Game2.Building
 {
     public abstract class BuildingBase : MonoBehaviour
     {
-        //[NonSerialized] 
-        public Vector3Int actualCell;
-        //[NonSerialized]
-        public List<Vector3Int> actualCells;
+        [NonSerialized] public Vector3Int actualCell;
+        [NonSerialized] public List<Vector3Int> actualCells;
+
+        [NonSerialized] bool IsDrawGizmos;
 
         public Vector3Int[] CellMask { get; private set; }
         public Vector3 OffsetFromCellToPivot { get; private set; }
@@ -20,15 +23,29 @@ namespace Game2.Building
 
         private void OnDrawGizmosSelected()
         {
+            if (!IsDrawGizmos)
+                return;
+
+            Init();
+
             //GizmosExtension.DrawBounds(transform.GetTotalRendererBounds()); 
 
-            //Bounds bound = BoundsExtension.Encompass(actualCells.Select(p => new Bounds(p, Vector3.one)).ToArray());
-            //GizmosExtension.DrawBounds(bound);
+            Bounds bound = BoundsExtension.Encompass(actualCells.Select(p => new Bounds(p + Vector3.one * 0.5f, Vector3.one)).ToArray());
+            GizmosExtension.DrawBounds(bound);
 
             foreach (var cell in actualCells)
             {
                 Gizmos.DrawSphere(GameGrid.CellToWorldPoint(cell), 0.2f);
             }
+        }
+
+        [Button]
+        public void DrawGizmos()
+        {
+            IsDrawGizmos = true;
+            Init();
+            Vector3Int cell = GameGrid.WorldPointToCell(transform.position - OffsetFromCellToPivot);
+            MoveToCell(cell);
         }
 
         public void Init()
@@ -39,9 +56,9 @@ namespace Game2.Building
             int yCellSize = (int)Mathf.Ceil(bounds.size.y);
             int zCellSize = (int)Mathf.Ceil(bounds.size.z);
 
-            int xFirst = (xCellSize - 1) / 2;// + (xCellSize % 2 == 0 ? 1 : 0);
-            int yFirst = 0; //(yCellSize - 1) / 2 + (yCellSize % 2 == 0 ? 1 : 0);
-            int zFirst = (zCellSize - 1) / 2;// + (zCellSize % 2 == 0 ? 1 : 0);
+            int xFirst = (xCellSize - 1) / 2;
+            int yFirst = 0;
+            int zFirst = (zCellSize - 1) / 2;
 
             List<Vector3Int> cells = new List<Vector3Int>(xCellSize * yCellSize * zCellSize);
             for (int x = 0; x < xCellSize; x++)
@@ -63,7 +80,7 @@ namespace Game2.Building
             Vector3 basePoint = bounds.center;
             basePoint.y -= bounds.extents.y;
             Vector3 offsetFromCellToPivot = transform.position - basePoint;
-            offsetFromCellToPivot.y -= 0.5f;
+            offsetFromCellToPivot.y -= 0.5f;// чтобы здание встало на нижную грань ячейки
             offsetFromCellToPivot.x += xCellSize % 2 == 0 ? 0.5f : 0;
             offsetFromCellToPivot.z += zCellSize % 2 == 0 ? 0.5f : 0;
             OffsetFromCellToPivot = offsetFromCellToPivot;
@@ -89,14 +106,22 @@ namespace Game2.Building
             return newMask;
         }
 
-        internal void SetFantomColor(Color color)
+        internal void SetFantomColor(UnityEngine.Color color)
         {
-            var allRenderer = GetComponentsInChildren<MeshRenderer>();
-            foreach (var renderer in allRenderer)
-                renderer.material.color = color;
+            foreach (var renderer in GetComponentsInChildren<MeshRenderer>())
+            {
+                Material[] mats = renderer.materials;
+                for (int i = 0; i < mats.Length; i++)
+                {
+                    mats[i].color = color;
+                    //TODO Emission
+                }
+
+                renderer.materials = mats;
+            }
         }
 
-        internal void SetFantomMode()
+        internal void SetFantomMode(Material material)
         {
             foreach (var c in GetComponentsInChildren<Collider>())
                 DestroyImmediate(c);
@@ -106,8 +131,23 @@ namespace Game2.Building
 
             foreach (var mb in GetComponentsInChildren<MonoBehaviour>())
             {
-                if (mb != this)
+                if (mb == this)
+                {
+                    mb.enabled = false;
+                }
+                else
+                {
                     DestroyImmediate(mb);
+                }
+            }
+
+            foreach (var renderer in GetComponentsInChildren<MeshRenderer>())
+            {
+                Material[] mats = renderer.materials;
+                for (int i = 0; i < mats.Length; i++)
+                    mats[i] = material;
+
+                renderer.materials = mats;
             }
         }
     }

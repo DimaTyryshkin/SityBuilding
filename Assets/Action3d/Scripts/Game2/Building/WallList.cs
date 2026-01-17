@@ -3,18 +3,18 @@ using UnityEngine;
 
 namespace Game2.Building
 {
-    public class WallList : BuildingList<WallBuilding, WallJson>
+    class WallList : BuildingList<WallBuilding, WallJson>
     {
-        protected override WallJson PrintToJson(WallBuilding item)
+        protected override WallJson PrintToJson(WallBuilding building)
         {
             return new WallJson()
             {
-                cell = item.actualCell,
+                cell = building.actualCell,
                 roration = 0
             };
         }
 
-        protected override List<WallJson> GetJsonList(MapJson mapJson, GridContent mapBuilder) => mapJson.wallsA;
+        protected override List<WallJson> GetJsonList(MapJson mapJson) => mapJson.wallsA;
 
         protected override void RemoveInternal(WallBuilding building) { }
 

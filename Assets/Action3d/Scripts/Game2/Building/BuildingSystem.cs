@@ -1,6 +1,8 @@
 ﻿using GamePackages.Core.Validation;
 using GamePackages.InputSystem;
+using JetBrains.Annotations;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -13,51 +15,69 @@ namespace Game2.Building
         [SerializeField, IsntNull] Camera cameraForBuilding;
         [SerializeField, IsntNull] GameGrid grid;
         [SerializeField, IsntNull] GuiHit guiHit;
+        [SerializeField, IsntNull] Transform cellMarkersRoot;
+        [SerializeField, IsntNull] Material fantomMaterial;
 
-        [Header("Building info")]
+        [Header("Building List")]
         [SerializeField, IsntNull] WallList wallList;
+        [SerializeField, IsntNull] MetallMiningCampList metallMiningCampList;
 
-        List<PointBrush> staticBrushes;
+
+        CellMarkerList[] cellMarkerLists;
+
+        List<PointBrush> brushes;
         BuildingBrush activeBrush;
 
 
         public void Init()
         {
+            CellMarker[] cellMarkers = cellMarkersRoot.GetComponentsInChildren<CellMarker>();
+            cellMarkerLists = cellMarkers
+                .GroupBy(m => m.Marker)
+                .Select(
+                group => new CellMarkerList(
+                    group.Key,
+                    group.Select(m => m.Cell).ToArray())
+                ).ToArray();
+
             BuildingListBase[] allBuildingLists = new BuildingListBase[]
             {
                 wallList,
+                metallMiningCampList
             };
 
             foreach (BuildingListBase buildingList in allBuildingLists)
                 buildingList.Init();
 
             buildingBrushPanel.Init();
+            gridContent.Init(allBuildingLists, cellMarkerLists);
 
-            gridContent.Init(allBuildingLists);
-
-            BrushInject brushBuilder = new BrushInject(
+            BrushInject brushInject = new BrushInject(
                 cameraForBuilding,
                 gridContent,
                 grid,
-                guiHit
+                guiHit,
+                fantomMaterial
             );
 
-            //pipeBrush = new PipeBrush(pipeBuildingInfo, crossBuildingInfo, brushBuilder);
-
             activeBrush = null;
-            //buildingBrushPanel.SelectPipe += () => activeBrush = pipeBrush;
 
-            staticBrushes = new List<PointBrush>();
-
-
-            SetBrush(AddProduction(
-                brushBuilder,
-                wallList,
+            brushes = new List<PointBrush>();
+            SetBrush(AddButton(
+                new PointBrush(brushInject, wallList),
                 "Wall",
                 cell =>
                 {
                     wallList.InstantiateAsNew(cell, gridContent);
                 }));
+
+            AddButton(
+                new MiningCampBrush(brushInject, metallMiningCampList, CellMarkerValue.MetallMiningCamp),
+                "Metal Mining",
+                cell =>
+                {
+                    metallMiningCampList.InstantiateAsNew(cell, gridContent);
+                });
 
             //AddProduction(
             //    brushBuilder,
@@ -71,24 +91,25 @@ namespace Game2.Building
             //    converterBuildingInfo,
             //    "Water Cleaner",
             //    cell => converterBuildingInfo.InstantiateNew(cell, mapBuilder));
+
+            buildingBrushPanel.AddButton("None", () => SetBrush(null));
         }
 
-        PointBrush AddProduction(BrushInject brushInject, BuildingListBase buildingInfo, string buttonLabel, UnityAction<Vector3Int> buildAction)
+        PointBrush AddButton(PointBrush brush, string buttonLabel, UnityAction<Vector3Int> buildAction)
         {
-            PointBrush newBrush = new PointBrush(brushInject, buildingInfo);
-            staticBrushes.Add(newBrush);
-            buildingBrushPanel.AddButton(buttonLabel, () => SetBrush(newBrush));
-            newBrush.Build += buildAction;
-            return newBrush;
+            brushes.Add(brush);
+            buildingBrushPanel.AddButton(buttonLabel, () => SetBrush(brush));
+            brush.Build += buildAction;
+            return brush;
         }
 
-        void SetBrush(PointBrush brush)
+        void SetBrush([CanBeNull] PointBrush brush)
         {
             if (activeBrush != null)
                 activeBrush.OnDisableBrush();
 
             activeBrush = brush;
-            brush.OnEnableBrush();
+            brush?.OnEnableBrush();
         }
 
         void Update()

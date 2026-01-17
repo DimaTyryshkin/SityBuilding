@@ -12,7 +12,7 @@ namespace Game2.Building
         Pipe,
     }
 
-    public abstract class BuildingListBase : MonoBehaviour
+    abstract class BuildingListBase : MonoBehaviour
     {
         public abstract BuildingBase Prefab { get; }
 
@@ -26,7 +26,7 @@ namespace Game2.Building
         public abstract void PrintToJson(MapJson mapJson, GridContent mapBuilder, ref int actualId);
     }
 
-    public abstract class BuildingList<T, T2> : BuildingListBase
+    abstract class BuildingList<T, T2> : BuildingListBase
         where T : BuildingBase
         where T2 : BuildingJson
     {
@@ -44,13 +44,13 @@ namespace Game2.Building
             idToItem = new Dictionary<int, T>();
         }
 
-        protected abstract List<T2> GetJsonList(MapJson mapJson, GridContent mapBuilder);
+        protected abstract List<T2> GetJsonList(MapJson mapJson);
 
         public sealed override void ParseJson(MapJson mapJson, GridContent mapBuilder)
         {
             allBuildings = new List<T>();
             idToItem = new Dictionary<int, T>();
-            List<T2> itemsJson = GetJsonList(mapJson, mapBuilder);
+            List<T2> itemsJson = GetJsonList(mapJson);
             foreach (var json in itemsJson)
                 InstantiateFromSave(json, mapBuilder);
         }
@@ -59,7 +59,7 @@ namespace Game2.Building
         {
             itemToId = new Dictionary<T, int>();
 
-            List<T2> itemsJson = GetJsonList(mapJson, mapBuilder);
+            List<T2> itemsJson = GetJsonList(mapJson);
             foreach (var value in allBuildings)
             {
                 int id = ++actualId;

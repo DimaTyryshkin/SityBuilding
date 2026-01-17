@@ -17,7 +17,7 @@ namespace Game2.Building
         public List<BuildingBase> buildings = new List<BuildingBase>();
     }
 
-    public class GridContent : MonoBehaviour
+    class GridContent : MonoBehaviour
     {
         [SerializeField, IsntNull] Transform mapRoot;
         [SerializeField, IsntNull] GameGrid grid;
@@ -25,6 +25,7 @@ namespace Game2.Building
         [SerializeField, IsntNull] TextAsset jsonTemp;
 
         BuildingListBase[] buildingsLists;
+        CellMarkerList[] cellMarkerLists;
         MapJson mapJson;
         int actualId;
 
@@ -40,10 +41,12 @@ namespace Game2.Building
             return ++actualId;
         }
 
-        public void Init(BuildingListBase[] buildingsLists)
+        public void Init(BuildingListBase[] buildingsLists, CellMarkerList[] cellMarkerLists)
         {
             AssertWrapper.IsAllNotNull(buildingsLists);
+            AssertWrapper.IsAllNotNull(cellMarkerLists);
 
+            this.cellMarkerLists = cellMarkerLists;
             this.buildingsLists = buildingsLists;
             mapJson = new MapJson();
         }
@@ -70,6 +73,18 @@ namespace Game2.Building
 
             foreach (BuildingListBase list in buildingsLists)
                 list.CastNonAllocate(cell, ref result);
+        }
+
+        public CellMarkerValue GetCellMarker(Vector3Int cell)
+        {
+            foreach (CellMarkerList cellMarkerList in cellMarkerLists)
+            {
+                foreach (var c in cellMarkerList.cells)
+                    if (cell == c)
+                        return cellMarkerList.marker;
+            }
+
+            return CellMarkerValue.None;
         }
 
         void LoadFromJson(TextAsset jsonFile)

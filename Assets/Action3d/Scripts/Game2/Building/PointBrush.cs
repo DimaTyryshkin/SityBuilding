@@ -6,35 +6,38 @@ using UnityEngine.Events;
 
 namespace Game2.Building
 {
-    public class BrushInject
+    class BrushInject
     {
         public readonly Camera thisCamera;
         public readonly GridContent gridContent;
         public readonly GameGrid grid;
         public readonly GuiHit guiHit;
+        public readonly Material fantomMaterial;
 
         public BrushInject(
             Camera thisCamera,
             GridContent gridContent,
             GameGrid grid,
-            GuiHit guiHit
-        )
+            GuiHit guiHit,
+            Material fantomMaterial)
         {
             Assert.IsNotNull(thisCamera);
             Assert.IsNotNull(gridContent);
             Assert.IsNotNull(grid);
             Assert.IsNotNull(guiHit);
+            Assert.IsNotNull(fantomMaterial);
 
             this.thisCamera = thisCamera;
             this.gridContent = gridContent;
             this.grid = grid;
             this.guiHit = guiHit;
+            this.fantomMaterial = fantomMaterial;
         }
     }
 
-    public class PointBrush : BuildingBrush
+    class PointBrush : BuildingBrush
     {
-        readonly BrushInject inject;
+        readonly protected BrushInject inject;
         readonly RaycastHit[] raycastHits;
         readonly BuildingListBase buildingList;
         CellCast cast;
@@ -82,7 +85,12 @@ namespace Game2.Building
                 }
             }
 
-            buildingFantom.SetFantomColor(isFree ? Color.green : Color.red);
+            if (isFree)
+                isFree = CanBuild(cell, buildingFantom);
+
+            buildingFantom.SetFantomColor(isFree ?
+                new Color(0, 1, 0, 0.5f) :
+                new Color(1, 0, 0, 0.5f));
 
             if (isFree)
             {
@@ -96,19 +104,24 @@ namespace Game2.Building
             //    Remove(cells);
         }
 
+        protected virtual bool CanBuild(Vector3Int cell, BuildingBase buildingFantom)
+        {
+            return true;
+        }
+
         public override void OnEnableBrush()
         {
             buildingFantom = Object.Instantiate(buildingList.Prefab);
             buildingFantom.gameObject.SetActive(true);
             buildingFantom.Init();
-            buildingFantom.SetFantomMode();
+            buildingFantom.SetFantomMode(inject.fantomMaterial);
         }
 
         public override void OnDisableBrush()
         {
             if (buildingFantom)
             {
-                Object.Destroy(buildingFantom);
+                Object.Destroy(buildingFantom.gameObject);
                 buildingFantom = null;
             }
         }

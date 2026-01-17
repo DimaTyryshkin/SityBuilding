@@ -8,13 +8,7 @@ namespace Game2.Building
     public class MapJson
     {
         public List<WallJson> wallsA = new List<WallJson>();
-        //public List<PipeJson> pipes = new List<PipeJson>();
-        //public List<CrossJson> cross = new List<CrossJson>();
-        //public List<SourceJson> sources = new List<SourceJson>();
-        //public List<DestinationJson> destinations = new List<DestinationJson>();
-        //public List<ItemMinerJson> dirtWaterMiners = new List<ItemMinerJson>();
-        //public List<ItemMinerJson> coalMiners = new List<ItemMinerJson>();
-        //public List<ItemConverterJson> waterCleanerConverters = new List<ItemConverterJson>();
+        public List<MetallMiningCampJson> metallMiningCamp = new List<MetallMiningCampJson>();
     }
 
     public abstract class BuildingJson
@@ -26,6 +20,14 @@ namespace Game2.Building
 
     [Serializable]
     public class WallJson : BuildingJson
+    {
+        public Vector3Int cell;
+        public int roration;
+        public override Vector3Int Cell => cell;
+    }
+
+    [Serializable]
+    public class MetallMiningCampJson : BuildingJson
     {
         public Vector3Int cell;
         public int roration;

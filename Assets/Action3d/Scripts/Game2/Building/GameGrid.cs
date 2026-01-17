@@ -20,6 +20,16 @@ namespace Game2.Building
             {135,090,045},
         };
 
+        public static void AlignToGrid(Transform t)
+        {
+            t.position = AlignToGrid(t.position);
+        }
+
+        public static Vector3 AlignToGrid(Vector3 position)
+        {
+            Vector3Int cell = WorldPointToCell(position);
+            return CellToWorldPoint(cell);
+        }
 
         public static Vector3Int WorldPointToCell(Vector3 worldPoint) => WorldPointToCell(worldPoint.x, worldPoint.y, worldPoint.z);
 
